@@ -1,0 +1,40 @@
+@import '../variables.scss';
+
+.auth-page {
+    color: $text-black;
+    background-image: url('../../../../../public/images/background.png');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+    
+
+    .wrapper {
+        // background-color: $white;
+        box-shadow: 0 0 40px rgba(0,0,0,0.16);
+        backdrop-filter: blur(2px);
+        font-family: "Josefin Sans", sans-serif;
+        
+        p{
+            color: $secondary-color;
+        }
+
+        .input-group {
+            input {
+                background-color: $primary-color;
+                box-shadow: none;
+                color: $secondary-color;
+                &:focus {
+                    border-color: $secondary-color; 
+                    box-shadow: none;
+                }
+            }
+            &:focus-within .input-group-text {
+                border-color: $secondary-color;
+                i{
+                    color: $secondary-color;
+                }
+            }
+        }
+        
+      
+    }
+}

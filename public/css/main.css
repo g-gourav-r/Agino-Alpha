@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;300;400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap");
+.btn-green {
+  background-color: #09ba6e;
+  color: white;
+  border-radius: 6px;
+  border: 1px solid #09ba6e;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.btn-green:hover {
+  background-color: transparent;
+  color: #333;
+}
+.btn-green:focus {
+  border-color: #09ba6e;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(9, 186, 110, 0.3);
+  background-color: transparent;
+  color: #333;
+}
+
+.btn-black {
+  background-color: transparent;
+  border-radius: 6px;
+  color: #333;
+  border: 1px solid #333;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.btn-black:hover {
+  background-color: #333;
+  color: white;
+}
+.btn-black:focus {
+  outline: none;
+  background-color: #333;
+  color: white;
+  box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.3);
+}
+
+.auth-page {
+  color: #333;
+  background-image: url("../../../../../public/images/background.png");
+  background-size: cover; /* Adjust as needed */
+  background-position: center; /* Adjust as needed */
+}
+.auth-page .wrapper {
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(2px);
+  font-family: "Josefin Sans", sans-serif;
+}
+.auth-page .wrapper p {
+  color: #09ba6e;
+}
+.auth-page .wrapper .input-group input {
+  background-color: #f7f8fa;
+  box-shadow: none;
+  color: #09ba6e;
+}
+.auth-page .wrapper .input-group input:focus {
+  border-color: #09ba6e;
+  box-shadow: none;
+}
+.auth-page .wrapper .input-group:focus-within .input-group-text {
+  border-color: #09ba6e;
+}
+.auth-page .wrapper .input-group:focus-within .input-group-text i {
+  color: #09ba6e;
+}
+
+body {
+  font-family: "Playwrite CU", cursive;
+  background-color: #09ba6e;
+}
+
+/*# sourceMappingURL=main.css.map */

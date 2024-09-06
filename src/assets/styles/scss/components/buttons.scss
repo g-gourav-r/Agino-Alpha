@@ -1,0 +1,40 @@
+.btn-green {
+    background-color: $secondary-color;
+    color: $white;
+    border-radius: 6px;
+    border: 1px solid $secondary-color;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+
+    &:hover {
+        background-color: transparent;
+        color: $text-black;
+    }
+
+    &:focus {
+        border-color: $secondary-color;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($secondary-color, 0.3);
+        background-color: transparent;
+        color: $text-black;
+    }
+}
+
+.btn-black {
+    background-color: transparent;
+    border-radius: 6px;
+    color: $text-black;
+    border: 1px solid $text-black;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+
+    &:hover {
+        background-color: $text-black;
+        color: $text-white;
+    }
+
+    &:focus {
+        outline: none;
+        background-color: $text-black;
+        color: $text-white;
+        box-shadow: 0 0 0 3px rgba($text-black, 0.3);
+    }
+}
