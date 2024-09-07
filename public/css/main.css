@@ -37,6 +37,57 @@
   box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.3);
 }
 
+.btn-white {
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
+  color: #333;
+  border-radius: 6px;
+  border: 1px solid #09ba6e;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.btn-white:hover {
+  background-color: white;
+  color: #333;
+  border-color: #333;
+}
+.btn-white:focus {
+  border-color: #09ba6e;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(9, 186, 110, 0.3);
+  background-color: transparent;
+  color: #333;
+}
+
+.btn-outline {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #333;
+}
+.btn-outline:hover {
+  color: #09ba6e;
+}
+
+.btn-green-outline {
+  background-color: white;
+  color: #09ba6e;
+  border-radius: 6px;
+  border: 1px solid #09ba6e;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.btn-green-outline:hover {
+  background-color: #09ba6e;
+  color: white;
+}
+.btn-green-outline:focus {
+  border-color: #09ba6e;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(9, 186, 110, 0.3);
+  background-color: transparent;
+  color: #333;
+}
+
 .background-image {
   position: absolute;
   top: 0;
@@ -58,7 +109,7 @@
 
 .header .navbar-brand {
   font-family: "Bruno Ace", sans-serif;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Shadow with offset and blur */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 .header .navbar-nav {
   background-color: white;
@@ -67,10 +118,18 @@
 .header .navbar-nav .nav-item {
   padding: 3px;
 }
+.header .navbar-nav .nav-item .nav-link {
+  cursor: default;
+}
 .header .navbar-nav .nav-item .nav-link.active {
   background-color: #09ba6e;
   color: white;
   border-radius: 20px;
+}
+.header .navbar-nav .nav-item .nav-link:hover {
+  border-radius: 20px;
+  background-color: #09ba6e;
+  color: white;
 }
 
 .page-wrapper .window-wrapper {
@@ -89,6 +148,116 @@
   border-radius: 10px;
   height: 100%;
   width: 100%;
+}
+
+.chat-input {
+  border-radius: 10px; /* Rounded corners */
+  border: 1px solid #ccc; /* Border color for non-focused state */
+  padding: 0.5rem; /* Padding inside the input */
+}
+.chat-input:focus {
+  box-shadow: 0 0 5px #09ba6e; /* Custom shadow on focus */
+  outline: none; /* Remove default focus outline */
+}
+
+.chat-content {
+  display: flex;
+  flex-direction: column; /* Arrange chat bubbles vertically */
+  align-items: flex-start; /* Default to left alignment for AI messages */
+}
+.chat-content .chat-bubble {
+  max-width: 75%; /* Maximum width of chat bubbles */
+  width: auto; /* Allow width to adjust dynamically */
+  padding: 0.5rem; /* Padding inside chat bubbles */
+  border-radius: 10px; /* Rounded corners for bubbles */
+  margin-bottom: 0.5rem; /* Space between chat bubbles */
+  word-wrap: break-word; /* Ensure long words wrap to the next line */
+  overflow-wrap: break-word; /* Break long words if necessary */
+  white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+}
+.chat-content .chat-bubble.ai {
+  border: 1px solid #333; /* Green border with 40% opacity */
+  border-radius: 10px 10px 10px 0px; /* Rounded corners for bubbles */
+  align-self: flex-start; /* Align AI messages to the left */
+  text-align: left; /* Align text to the left */
+  background-color: white;
+}
+.chat-content .chat-bubble.human {
+  border: 1px solid #09ba6e; /* Green border with 40% opacity */
+  border-radius: 10px 10px 0 10px; /* Rounded corners for bubbles */
+  align-self: flex-end; /* Align human messages to the right */
+  text-align: right; /* Align text to the right */
+  background-color: white;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(2px);
+  border-radius: 0.3rem;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 1rem;
+  }
+}
+
+.modal-header {
+  border-bottom: 1px solid #444;
+}
+.modal-header .modal-title {
+  color: #fff;
+}
+
+.code-editor-container {
+  position: relative;
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+  padding: 15px;
+  border-radius: 5px;
+  overflow: auto;
+  max-width: 100%;
+  max-height: 300px;
+}
+
+.code-block {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+}
+
+.copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  border: none;
+  background-color: transparent;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 1;
+}
+.copy-button.hover {
+  background-color: white;
+  border-radius: 10px;
+  color: #1e1e1e;
 }
 
 .auth-page {

@@ -1,0 +1,37 @@
+// Modal overlay styles
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+// Modal content styles
+.modal-content {
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(2px); // Dark background
+    border-radius: 0.3rem;
+    padding: 2rem;
+    max-width: 600px;  // Set a max-width for the modal
+    width: 100%;       // Make the modal take full width within max-width
+
+    // Responsive adjustments
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
+}
+
+// Modal header styles
+.modal-header {
+    border-bottom: 1px solid #444;
+
+    .modal-title {
+        color: #fff;
+    }
+}

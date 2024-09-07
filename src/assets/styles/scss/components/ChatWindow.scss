@@ -1,0 +1,47 @@
+.chat-input {
+    border-radius: 10px; /* Rounded corners */
+    border: 1px solid #ccc; /* Border color for non-focused state */
+    padding: 0.5rem; /* Padding inside the input */
+
+    &:focus{
+        box-shadow: 0 0 5px $secondary-color; /* Custom shadow on focus */
+        outline: none; /* Remove default focus outline */
+    }
+}
+
+.chat-content {
+    display: flex;
+    flex-direction: column; /* Arrange chat bubbles vertically */
+    align-items: flex-start; /* Default to left alignment for AI messages */
+
+    .chat-bubble {
+        max-width: 75%; /* Maximum width of chat bubbles */
+        width: auto; /* Allow width to adjust dynamically */
+        padding: 0.5rem; /* Padding inside chat bubbles */
+        border-radius: 10px; /* Rounded corners for bubbles */
+        margin-bottom: 0.5rem; /* Space between chat bubbles */
+        word-wrap: break-word; /* Ensure long words wrap to the next line */
+        overflow-wrap: break-word; /* Break long words if necessary */
+        white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+
+        &.ai {
+            border: 1px solid $text-black; /* Green border with 40% opacity */
+            border-radius: 10px 10px 10px 0px; /* Rounded corners for bubbles */
+            align-self: flex-start; /* Align AI messages to the left */
+            text-align: left; /* Align text to the left */
+            background-color: white;
+        }
+
+        &.human {
+            border: 1px solid $secondary-color; /* Green border with 40% opacity */
+            border-radius: 10px 10px 0 10px; /* Rounded corners for bubbles */
+            align-self: flex-end; /* Align human messages to the right */
+            text-align: right; /* Align text to the right */
+            background-color: white;
+        }
+    }
+}
+
+
+
+

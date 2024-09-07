@@ -1,27 +1,36 @@
-.navbar{
+.navbar {
     background-color: transparent;
     backdrop-filter: blur(5px);
-    box-shadow: 0 0 40px rgba(0,0,0,0.16);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
 }
-.header{
-    .navbar-brand{
-            font-family: $brand-font;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Shadow with offset and blur */
+
+.header {
+    .navbar-brand {
+        font-family: $brand-font;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
     }
 
-    .navbar-nav{
+    .navbar-nav {
         background-color: $white;
         border-radius: 20px;
 
-        .nav-item{
+        .nav-item {
             padding: 3px;
-            .nav-link.active{
-                background-color: $secondary-color;
-                color: $white;
-                border-radius: 20px;
+
+            .nav-link {
+                cursor: default;
+                &.active {
+                    background-color: $secondary-color;
+                    color: $white;
+                    border-radius: 20px;
+                }
+
+                &:hover {
+                    border-radius: 20px;
+                    background-color: $secondary-color;
+                    color: $white;
+                }
             }
         }
     }
-
-
 }

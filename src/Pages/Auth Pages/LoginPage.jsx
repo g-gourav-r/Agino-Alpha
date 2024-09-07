@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Background from "../../components/background/background";
 import createApiCall, { POST } from "../../components/api/api";
+import { v4 as uuidv4 } from 'uuid';
 
 function LoginPage() {
 
@@ -42,6 +43,7 @@ function LoginPage() {
               .then(response => {
                 const token = response.token;
                 localStorage.setItem('token', token);
+                localStorage.setItem('psid', uuidv4());
                 navigate('/home');
               })
               .catch(async error => {

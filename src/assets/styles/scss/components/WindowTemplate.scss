@@ -1,20 +1,20 @@
 .page-wrapper {
     .window-wrapper {
-        background-color: transparent; // Transparent background for the wrapper
-        backdrop-filter: blur(5px); // Apply blur to the background
-        box-shadow: 0 0 40px rgba(0, 0, 0, 0.16); // Optional: add shadow for visual effect
+        background-color: transparent; 
+        backdrop-filter: blur(5px);
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
 
         .content-window {
-            background-color: transparent; // Fully transparent
-            backdrop-filter: none; // Remove blur effect for the child
-            position: relative; // Ensure positioning context for child elements
+            background-color: transparent;
+            backdrop-filter: none;
+            position: relative;
 
             .main-content-window {
                 background-color:transparent;
-                backdrop-filter: blur(60px); // Apply blur to the background
-                border-radius: 10px; // Optional: rounded corners
-                height: 100%; // Ensure it takes full height
-                width: 100%; // Ensure it takes full width
+                backdrop-filter: blur(60px); 
+                border-radius: 10px; 
+                height: 100%; 
+                width: 100%;
             }
         }
     }
