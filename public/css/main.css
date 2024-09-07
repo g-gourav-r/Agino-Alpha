@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;300;400;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bruno+Ace&display=swap");
 .btn-green {
   background-color: #09ba6e;
   color: white;
@@ -37,11 +37,70 @@
   box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.3);
 }
 
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../../../../../public/images/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.navbar {
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
+}
+
+.header .navbar-brand {
+  font-family: "Bruno Ace", sans-serif;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Shadow with offset and blur */
+}
+.header .navbar-nav {
+  background-color: white;
+  border-radius: 20px;
+}
+.header .navbar-nav .nav-item {
+  padding: 3px;
+}
+.header .navbar-nav .nav-item .nav-link.active {
+  background-color: #09ba6e;
+  color: white;
+  border-radius: 20px;
+}
+
+.page-wrapper .window-wrapper {
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);
+}
+.page-wrapper .window-wrapper .content-window {
+  background-color: transparent;
+  backdrop-filter: none;
+  position: relative;
+}
+.page-wrapper .window-wrapper .content-window .main-content-window {
+  background-color: transparent;
+  backdrop-filter: blur(60px);
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+}
+
 .auth-page {
   color: #333;
-  background-image: url("../../../../../public/images/background.png");
   background-size: cover; /* Adjust as needed */
   background-position: center; /* Adjust as needed */
+}
+.auth-page .brand-logo h1 {
+  font-family: "Bruno Ace", sans-serif;
+  font-size: 100px;
+  color: rgba(51, 51, 51, 0.7); /* Slightly transparent color */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Shadow with offset and blur */
 }
 .auth-page .wrapper {
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.16);

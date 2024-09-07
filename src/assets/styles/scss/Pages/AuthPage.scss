@@ -1,17 +1,22 @@
-@import '../variables.scss';
-
 .auth-page {
     color: $text-black;
-    background-image: url('../../../../../public/images/background.png');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
     
-
+    .brand-logo{
+        h1 {
+            font-family: $brand-font;
+            font-size: 100px;
+            color: rgba($text-black, 0.7); /* Slightly transparent color */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Shadow with offset and blur */
+        }
+        
+    }
     .wrapper {
         // background-color: $white;
         box-shadow: 0 0 40px rgba(0,0,0,0.16);
         backdrop-filter: blur(2px);
-        font-family: "Josefin Sans", sans-serif;
+        font-family: $font-primary;
         
         p{
             color: $secondary-color;

@@ -6,7 +6,7 @@ const createApiCall =
   (url, method) =>
   (params = {}) => {
 
-    let apiEndpoint = "http://127.0.0.1:8000/" + url;
+    let apiEndpoint = "http://127.0.0.1:3000/" + url;
 
     const { body, urlParams, pathVariables } = params;
 
@@ -23,6 +23,9 @@ const createApiCall =
 
     return fetch(apiEndpoint, {
       method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(body),
     }).then(async res => {
       const resp = await res.json();
