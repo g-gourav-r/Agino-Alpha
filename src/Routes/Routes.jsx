@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
 import ProtectedRoute from './ProtectedRoutes';
-import LoginPage from '../Pages/Auth Pages/LoginPage';
-import SignupPage from '../Pages/Auth Pages/SignupPage';
+import LoginPage from '../Pages/AuthPages/LoginPage';
+import SignupPage from '../Pages/AuthPages/SignupPage';
 import Chat from '../Pages/Chat';
 import DataSource from '../Pages/DataSource';
-import HomePage from '../Pages/Generic Pages/HomePage';
+import HomePage from '../Pages/GenericPages/HomePage';
 import Notepad from '../Pages/notepad';
 
 function AppRouter() {
