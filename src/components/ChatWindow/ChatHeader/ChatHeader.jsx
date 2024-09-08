@@ -1,8 +1,10 @@
 function ChatHeader() {
+
+  const sessionID = localStorage.getItem('sessionId');
     return (
       <div>
         <div className="bg-white m-2 border p-2 rounded d-flex align-items-center justify-content-between">
-          <h5 className="my-auto">Data Source (Need Endpoint)</h5>
+          <p className="my-auto">Session ID: {sessionID} </p>
           <div className="dropdown">
             <button
               className="btn-outline dropdown-toggle p-2"

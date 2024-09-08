@@ -16,6 +16,10 @@ function AddDataSource() {
   const [fileModalIsOpen, setFileModalIsOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
+  
+  // Handle database form modal
+  const [dbModalIsOpen, setDbModalIsOpen] = useState(false);
+  const [formSubmitStatus, setFormSubmitStatus] = useState("");
 
   useEffect(() => {
     // Fetch data from API
@@ -41,11 +45,50 @@ function AddDataSource() {
   const handleButtonClick = (db) => {
     setCurrentDb(db);
     setFormFields(db.config.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
-    setModalIsOpen(true);
+    setDbModalIsOpen(true); // Open the modal for DB form
   };
 
   const closeModal = () => {
-    setModalIsOpen(false);
+    setDbModalIsOpen(false);
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormFields((prevFields) => ({
+      ...prevFields,
+      [name]: value,
+    }));
+  };
+
+  const handleFormSubmit = () => {
+    // You can perform any validation here
+    const isFormValid = Object.values(formFields).every((value) => value !== "");
+    if (!isFormValid) {
+      setFormSubmitStatus("Please fill in all required fields.");
+      return;
+    }
+
+    // Make API call to submit form
+    const submitApi = createApiCall("submitDatabaseConfig", POST);
+
+    submitApi({
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      data: formFields,
+    })
+      .then((response) => {
+        if (response.status) {
+          setFormSubmitStatus("Form submitted successfully!");
+          setDbModalIsOpen(false);
+        } else {
+          setFormSubmitStatus("Failed to submit the form.");
+        }
+      })
+      .catch((error) => {
+        setFormSubmitStatus("Error submitting the form.");
+        console.error("Error submitting form:", error);
+      });
   };
 
   const handleFileUpload = () => {
@@ -126,6 +169,53 @@ function AddDataSource() {
         </button>
       </div>
 
+      {/* Database Form Modal */}
+      {dbModalIsOpen && (
+        <Modal
+          isOpen={dbModalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Add Database Config"
+          className="modal-content bg-white rounded"
+          overlayClassName="modal-overlay"
+        >
+          <div className="d-flex justify-content-between align-items-center pb-3">
+            <h5 className="modal-title">Add {currentDb?.dbtype} Config</h5>
+            <button type="button" className="btn-outline" onClick={closeModal}>
+              <i className="bi bi-x-circle"></i>
+            </button>
+          </div>
+          <form>
+            {currentDb?.config.map((field) => (
+              <div key={field} className="form-group py-2">
+                <label>{field}</label>
+                <input
+                  type="text"
+                  name={field}
+                  value={formFields[field]}
+                  onChange={handleFormChange}
+                  className="form-control"
+                />
+              </div>
+            ))}
+          </form>
+          <div className="text-start">
+            <button
+              type="button"
+              className="m-2 p-2 px-4 mb-0 btn-green"
+              onClick={handleFormSubmit}
+            >
+              {loading ? (
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              ) : (
+                "Submit"
+              )}
+            </button>
+          </div>
+          {formSubmitStatus && <p className="mt-3 text-success">{formSubmitStatus}</p>}
+        </Modal>
+      )}
+
+      {/* File Upload Modal */}
       {fileModalIsOpen && (
         <Modal
           isOpen={fileModalIsOpen}

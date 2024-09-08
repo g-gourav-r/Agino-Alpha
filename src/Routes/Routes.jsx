@@ -7,17 +7,21 @@ import LoginPage from '../Pages/Auth Pages/LoginPage';
 import SignupPage from '../Pages/Auth Pages/SignupPage';
 import Chat from '../Pages/Chat';
 import DataSource from '../Pages/DataSource';
+import HomePage from '../Pages/Generic Pages/HomePage';
+import Notepad from '../Pages/notepad';
 
 function AppRouter() {
     return (
       <Router>
         <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/app/login" element={<LoginPage />} />
+            <Route path="/app/signup" element={<SignupPage />} />
 
             {/* Protected Routes */}
-            <Route path="/" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-            <Route path="/data-source" element={<ProtectedRoute><DataSource /></ProtectedRoute>} />            
+            <Route path="/app/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/app/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+            <Route path="/app/dbsource" element={<ProtectedRoute><DataSource /></ProtectedRoute>} />     
+            <Route path="/app/notepad" element={<ProtectedRoute><Notepad /></ProtectedRoute>} />            
         </Routes>
       </Router>
     );

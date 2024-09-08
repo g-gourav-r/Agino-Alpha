@@ -24,7 +24,7 @@ function Chat(){
 
         <Background>
         <div className="d-flex flex-column vh-100">
-        <Header currentPage={"home"}/>
+        <Header currentPage={"chat"}/>
         <WindowTemplate
             sideBar={<ChatHistory onStartNewChat={handleStartNewChat}  onSelectChat={onSelectChat} />}
             Maincontent={<ChatWindow isNewChat={isNewChat} resetNewChat={() => setIsNewChat(false)} selectedChatId={selectedChatId}/>}
