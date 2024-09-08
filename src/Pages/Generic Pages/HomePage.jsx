@@ -1,4 +1,4 @@
-import Background from "../../components/background/background";
+import Background from "../../components/Background/background";
 import Header from "../../components/header/header";
 
 function HomePage(){
