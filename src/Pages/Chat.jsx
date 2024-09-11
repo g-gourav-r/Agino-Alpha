@@ -3,6 +3,7 @@ import Background from "../components/Background/Background";
 import Header from "../components/header/header";
 import React, { useState } from 'react';
 import ChatHistory from "../components/ChatHistory/ChatHistory";
+import ChatWindow from "../components/ChatWindow/ChatWindow";
 
 
 

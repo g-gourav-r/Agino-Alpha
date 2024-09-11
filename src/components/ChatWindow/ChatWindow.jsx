@@ -70,7 +70,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                             )}
                                             {chat.context.DB_response && (
                                                 <div className="database-table-container">
-                                                    <DatabaseTable DB_response={chat.context.DB_response} />
+                                                    <DatabaseTable   DB_response={chat.context.DB_response} ChatLogId={chat._id}  />
                                                 </div>
                                             )}
                                             {chat.context.followup.length > 0 && (
@@ -201,7 +201,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                         </div>
                                     )}
                                     <div className="database-table-container">
-                                        <DatabaseTable DB_response={DB_response} />
+                                        <DatabaseTable DB_response={DB_response} ChatLogId={chatLogId} />
                                     </div>
                                     {(SQL_query && DB_response.length > 0) && (
                                         <div className="mx-4">
