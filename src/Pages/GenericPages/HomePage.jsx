@@ -1,4 +1,4 @@
-import Background from "../../components/Background/Background.jsx";
+import Background from "../../components/Background/BackgroundImage.jsx";
 import Header from "../../components/header/header.jsx";
 
 function HomePage(){

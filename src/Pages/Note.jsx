@@ -3,7 +3,7 @@ import WindowTemplate from "../components/WindowTemplate/WindowTemplate.jsx";
 import Header from "../components/header/header.jsx";
 import NoteEditor from "../components/NotePad/NoteEditor.jsx";
 import NoteHistory from "../components/NotePad/NoteHistory.jsx";
-import Background from '../components/Background/Background.jsx';
+import Background from '../components/Background/BackgroundImage.jsx';
 
 function NotePad() {
   const [selectedNote, setSelectedNote] = useState(null);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import Background from "../../components/Background/Background.jsx";
+import Background from "../../components/Background/BackgroundImage.jsx";
 import createApiCall, { POST } from "../../components/api/api";
 
 function SignupPage() {

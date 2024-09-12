@@ -1,5 +1,5 @@
 import WindowTemplate from "../components/WindowTemplate/WindowTemplate.jsx";
-import Background from "../components/Background/Background.jsx";
+import Background from "../components/Background/BackgroundImage.jsx";
 import Header from "../components/header/header.jsx";
 import AddDataSource from "../components/AddDataSource/AddDataSource.jsx";
 
