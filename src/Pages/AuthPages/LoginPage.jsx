@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Background from "../../components/Background/Background.jsx";
+import Background from "../../components/Background/Background";
 import createApiCall, { POST } from "../../components/api/api";
 import { v4 as uuidv4 } from 'uuid';
 
