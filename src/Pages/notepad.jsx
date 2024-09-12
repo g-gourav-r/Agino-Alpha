@@ -1,23 +1,29 @@
+import React, { useState } from 'react';
 import WindowTemplate from "../components/WindowTemplate/WindowTemplate";
 import Background from "../components/Background/Background";
 import Header from "../components/header/header";
-import React, { useState } from 'react';
+import NoteEditor from "../components/NotePad/NoteEditor";
+import NoteHistory from "../components/NotePad/NoteHistory";
 
-function notepad(){
+function NotePad() {
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [refreshHistory, setRefreshHistory] = useState(false);
 
-    return (
+  const refreshNoteHistory = () => {
+    setRefreshHistory(!refreshHistory); // Trigger history refresh
+  };
 
-        <Background>
-        <div className="d-flex flex-column vh-100">
-            <Header currentPage={"notepad"}/>
-            <WindowTemplate
-                Maincontent={"Failed to get endpoint"}
-                sideBar={"Failed to get endpoint"}
-            />
-        </div>
+  return (
+    <Background>
+      <div className="d-flex flex-column vh-100">
+        <Header currentPage={"notepad"} />
+        <WindowTemplate
+          Maincontent={<NoteEditor selectedNote={selectedNote} refreshNoteHistory={refreshNoteHistory} />}
+          sideBar={<NoteHistory setSelectedNote={setSelectedNote} refreshHistory={refreshHistory} />}
+        />
+      </div>
     </Background>
-
-    );
+  );
 }
 
-export default notepad;
+export default NotePad;

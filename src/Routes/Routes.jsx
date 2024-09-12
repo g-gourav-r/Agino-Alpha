@@ -8,7 +8,7 @@ import SignupPage from '../Pages/AuthPages/SignupPage';
 import Chat from '../Pages/Chat';
 import DataSource from '../Pages/DataSource';
 import HomePage from '../Pages/GenericPages/HomePage';
-import Notepad from '../Pages/notepad';
+import Notepad from '../Pages/NotePad';
 
 function AppRouter() {
     return (
@@ -18,6 +18,7 @@ function AppRouter() {
             <Route path="/app/signup" element={<SignupPage />} />
 
             {/* Protected Routes */}
+            <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/app/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/app/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
             <Route path="/app/dbsource" element={<ProtectedRoute><DataSource /></ProtectedRoute>} />     
