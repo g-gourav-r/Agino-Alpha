@@ -17,16 +17,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'  # Update to a Node.js version that supports the required syntax
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps  # Handle potential dependency conflicts
 
       - name: Build app
-        run: npm run build
-
-      - name: List files in dist directory
-        run: ls
+        run: npm run build -- --unhandled-rejections=strict  # Handle unhandled promise rejections
 
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master
