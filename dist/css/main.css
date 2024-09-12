@@ -260,6 +260,35 @@
   color: #1e1e1e;
 }
 
+.notepad-header {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+}
+.notepad-header input {
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
+.notepad-header input:focus {
+  outline: none !important;
+  box-shadow: none;
+  background-color: transparent;
+}
+.notepad-header button {
+  border-radius: 20px;
+}
+
+.notepad-editor {
+  height: 75vh;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.notepad-editor .quill {
+  height: 75vh;
+}
+
 .auth-page {
   color: #333;
   background-size: cover;

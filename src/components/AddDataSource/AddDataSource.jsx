@@ -61,7 +61,7 @@ function AddDataSource() {
   };
 
   const handleFormSubmit = () => {
-    // You can perform any validation here
+    // Validate the form
     const isFormValid = Object.values(formFields).every((value) => value !== "");
     if (!isFormValid) {
       setFormSubmitStatus("Please fill in all required fields.");
@@ -75,7 +75,7 @@ function AddDataSource() {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      data: formFields,
+      body: JSON.stringify(formFields),
     })
       .then((response) => {
         if (response.status) {
@@ -109,21 +109,25 @@ function AddDataSource() {
       setUploadStatus("Please select a file.");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("file", file);
-
-    // Show loading spinner
+  
+    // Debugging: Check the contents of formData
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+  
     setLoading(true);
-
+  
     // Make POST request to uploadSheet API
     const uploadApi = createApiCall("uploadSheet", POST);
-
+  
     uploadApi({
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      data: formData,
+      body: formData, // Use `body` for file uploads
     })
       .then((response) => {
         setLoading(false);
@@ -139,6 +143,7 @@ function AddDataSource() {
         console.error("Error uploading file:", error);
       });
   };
+  
 
   return (
     <div>
