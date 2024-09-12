@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import WindowTemplate from "../components/WindowTemplate/WindowTemplate.jsx";
 import Header from "../components/header/header.jsx";
 import NoteEditor from "../components/NotePad/NoteEditor.jsx";

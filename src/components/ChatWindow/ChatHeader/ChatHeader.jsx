@@ -13,7 +13,7 @@ function ChatHeader() {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="bi bi-database-fill"></i>
+              <i className="bi bi-database-fill"></i>
             </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li>Need Endpoint</li>
