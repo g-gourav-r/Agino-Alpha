@@ -13,29 +13,23 @@ const createApiCall = (url, method) => (params = {}) => {
     if (pathVariables) {
         apiEndpoint = Object.keys(pathVariables).reduce(
             (acc, curr) => acc.replace(`{${curr}}`, String(pathVariables[curr])),
-            apiEndpoint
+            apiEndpoint,
         );
     }
 
-    const fetchOptions = {
+    return fetch(apiEndpoint, {
         method,
         headers: {
+            'Content-Type': 'application/json',
             ...headers,
         },
-        body: method !== GET ? body : undefined,
-    };
-
-    // Set Content-Type for JSON requests only
-    if (body && !(body instanceof FormData)) {
-        fetchOptions.headers['Content-Type'] = 'application/json';
-    }
-
-    return fetch(apiEndpoint, fetchOptions)
-        .then(async (res) => {
-            const resp = await res.json();
-            if (res.ok) return Promise.resolve(resp);
-            return Promise.reject(resp);
-        });
+        body: method !== GET ? JSON.stringify(body) : undefined,
+    })
+    .then(async res => {
+        const resp = await res.json();
+        if (res.ok) return Promise.resolve(resp);
+        return Promise.reject(resp);
+    });
 };
 
 export default createApiCall;
