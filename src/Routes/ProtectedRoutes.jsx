@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (!token) {
     // If no token is found, redirect to the login page
-    return <Navigate to="/app/login" />;
+    return <Navigate to="/login" />;
   }
 
   try {
@@ -26,11 +26,11 @@ const ProtectedRoute = ({ children }) => {
     if (decodedToken.exp < currentTime) {
       // If the token has expired, redirect to the login page
       localStorage.removeItem('token'); // Optionally remove the expired token
-      return <Navigate to="/app/login" />;
+      return <Navigate to="/login" />;
     }
   } catch (error) {
     // If there's an error decoding the token, redirect to the login page
-    return <Navigate to="/app/login" />;
+    return <Navigate to="/login" />;
   }
 
   // If the token is valid and not expired, render the protected component

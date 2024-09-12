@@ -44,7 +44,7 @@ function LoginPage() {
                 const token = response.token;
                 localStorage.setItem('token', token);
                 localStorage.setItem('psid', uuidv4());
-                navigate('/app/home');
+                navigate('/home');
               })
               .catch(async error => {
                 let errorMessage = 'An unknown error occurred';

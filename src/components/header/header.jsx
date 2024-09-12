@@ -6,7 +6,7 @@ function Header({ currentPage }) {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('sessionId');
-    navigate('/app/login');
+    navigate('/login');
   };
 
   return (
@@ -30,7 +30,7 @@ function Header({ currentPage }) {
               <a
                 className={`nav-link ${currentPage === 'chat' ? 'active' : ''}`}
                 aria-current="page"
-                onClick={() => navigate("/app/chat")}
+                onClick={() => navigate("/chat")}
               >
                 Chat
               </a>
@@ -57,7 +57,7 @@ function Header({ currentPage }) {
               <a
                 className={`nav-link ${currentPage === 'notepad' ? 'active' : ''}`}
                 aria-current="page"
-                onClick={() => navigate("/app/notepad")}
+                onClick={() => navigate("/notepad")}
               >
                 Notepad
               </a>
@@ -65,7 +65,7 @@ function Header({ currentPage }) {
             <li className="nav-item">
               <a
                 className={`nav-link ${currentPage === 'data-source' ? 'active' : ''}`}
-                onClick={() => navigate("/app/dbsource")}
+                onClick={() => navigate("/dbsource")}
               >
                 Data Source
               </a>

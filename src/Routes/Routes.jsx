@@ -8,21 +8,21 @@ import SignupPage from '../Pages/AuthPages/SignupPage';
 import Chat from '../Pages/Chat';
 import DataSource from '../Pages/DataSource';
 import HomePage from '../Pages/GenericPages/HomePage';
-import Notepad from '../Pages/NotePad';
+import NotePad from '../Pages/NotePad';
 
 function AppRouter() {
     return (
       <Router>
         <Routes>
-            <Route path="/app/login" element={<LoginPage />} />
-            <Route path="/app/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
 
             {/* Protected Routes */}
             <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-            <Route path="/app/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-            <Route path="/app/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-            <Route path="/app/dbsource" element={<ProtectedRoute><DataSource /></ProtectedRoute>} />     
-            <Route path="/app/notepad" element={<ProtectedRoute><Notepad /></ProtectedRoute>} />            
+            <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+            <Route path="/dbsource" element={<ProtectedRoute><DataSource /></ProtectedRoute>} />     
+            <Route path="/notepad" element={<ProtectedRoute><NotePad /></ProtectedRoute>} />            
         </Routes>
       </Router>
     );
