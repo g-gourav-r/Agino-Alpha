@@ -8,7 +8,7 @@ import SignupPage from '../Pages/AuthPages/SignupPage';
 import Chat from '../Pages/Chat';
 import DataSource from '../Pages/DataSource';
 import HomePage from '../Pages/GenericPages/HomePage';
-import NotePad from '../Pages/NotePad';
+import NotePad from '../Pages/Note';
 
 function AppRouter() {
     return (
