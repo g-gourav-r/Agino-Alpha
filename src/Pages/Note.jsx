@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import WindowTemplate from "../components/WindowTemplate/WindowTemplate";
-import Background from "../components/Background/Background";
 import Header from "../components/header/header";
 import NoteEditor from "../components/NotePad/NoteEditor";
 import NoteHistory from "../components/NotePad/NoteHistory";
+import Background from '../components/Background/Background';
 
 function NotePad() {
   const [selectedNote, setSelectedNote] = useState(null);
