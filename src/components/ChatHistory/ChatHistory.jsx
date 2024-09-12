@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import createApiCall, { GET } from "../api/api";
+import createApiCall, { GET } from "../api/api.jsx";
 
 function ChatHistory({ onStartNewChat, onSelectChat   }) {
   const [chatHistory, setChatHistory] = useState([]);

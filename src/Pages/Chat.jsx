@@ -1,9 +1,9 @@
-import WindowTemplate from "../components/WindowTemplate/WindowTemplate";
-import Background from "../components/Background/Background";
-import Header from "../components/header/header";
+import WindowTemplate from "../components/WindowTemplate/WindowTemplate.jsx";
+import Background from "../components/Background/Background.jsx";
+import Header from "../components/header/header.jsx";
 import React, { useState } from 'react';
-import ChatHistory from "../components/ChatHistory/ChatHistory";
-import ChatWindow from "../components/ChatWindow/ChatWindow";
+import ChatHistory from "../components/ChatHistory/ChatHistory.jsx";
+import ChatWindow from "../components/ChatWindow/ChatWindow.jsx";
 
 
 

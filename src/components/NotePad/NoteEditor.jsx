@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import createApiCall, { POST, PUT } from '../api/api';
-import Editor from './Editor'; // Assuming you have a custom Editor component
+import Editor from './Editor.jsx'; // Assuming you have a custom Editor component
 
 // Create the API call functions
 const AddNoteApi = createApiCall("api/notes", POST);

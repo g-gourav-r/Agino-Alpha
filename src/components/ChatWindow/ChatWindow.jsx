@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import ChatHeader from "./ChatHeader/ChatHeader";
-import ChatInput from "./ChatInput/ChatInput";
-import CodeEditor from './CodeEditor'; 
-import DatabaseTable from './DatabaseTable';
-import FollowupButtons from './FollowupButtons';
-import createApiCall, { POST, GET } from '../api/api';
+import ChatHeader from "./ChatHeader/ChatHeader.jsx";
+import ChatInput from "./ChatInput/ChatInput.jsx";
+import CodeEditor from './CodeEditor.jsx'; 
+import DatabaseTable from './DatabaseTable.jsx';
+import FollowupButtons from './FollowupButtons.jsx';
+import createApiCall, { POST, GET } from '../api/api.jsx';
 
 function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     const [messages, setMessages] = useState([]);

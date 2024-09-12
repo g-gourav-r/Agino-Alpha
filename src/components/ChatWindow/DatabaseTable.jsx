@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Line, Bar } from "react-chartjs-2";
-import createApiCall, { POST } from "../api/api";
+import createApiCall, { POST } from "../api/api.jsx";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import html2canvas from "html2canvas";
 

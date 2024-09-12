@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import createApiCall, { GET, POST } from "../api/api";
+import createApiCall, { GET, POST } from "../api/api.jsx";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
