@@ -166,7 +166,7 @@
   align-items: flex-start;
 }
 .chat-content .chat-bubble {
-  max-width: 75%;
+  max-width: 90%;
   width: auto;
   padding: 0.5rem;
   border-radius: 10px;
@@ -325,8 +325,7 @@
 }
 
 body {
-  font-family: "Playwrite CU", cursive;
-  background-color: #09ba6e;
+  font-size: small !important;
 }
 
 /*# sourceMappingURL=main.css.map */

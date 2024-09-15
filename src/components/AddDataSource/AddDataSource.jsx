@@ -69,7 +69,7 @@ function AddDataSource() {
     }
 
     // Make API call to submit form
-    const submitApi = createApiCall("submitDatabaseConfig", POST);
+    const submitApi = createApiCall("testConnection", POST);
 
     submitApi({
       headers: {
@@ -79,7 +79,7 @@ function AddDataSource() {
     })
       .then((response) => {
         if (response.status) {
-          setFormSubmitStatus("Form submitted successfully!");
+          setFormSubmitStatus(response.status);
           setDbModalIsOpen(false);
         } else {
           setFormSubmitStatus("Failed to submit the form.");
@@ -112,11 +112,6 @@ function AddDataSource() {
   
     const formData = new FormData();
     formData.append("file", file);
-  
-    // Debugging: Check the contents of formData
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
   
     setLoading(true);
   

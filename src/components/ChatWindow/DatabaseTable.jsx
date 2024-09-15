@@ -206,7 +206,7 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
       {/* Generate Graph Button */}
       <div className="mx-4">
         <button
-          className="btn-black p-2 mt-4 w-100"
+          className="btn-black p-2 mt-1 w-100"
           onClick={handleGenerateGraph}
         >
           <i className="bi bi-download me-2 p-2"></i>Generate Graph

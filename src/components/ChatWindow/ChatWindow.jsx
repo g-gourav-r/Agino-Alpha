@@ -59,12 +59,12 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                         <div className="message-content">
                                             <div>{chat.context.agent}</div>
                                             {chat.context.SQL_query && (
-                                                <div className="code-editor-container my-4">
+                                                <div className="code-editor-container my-1">
                                                     <CodeEditor SQL_query={chat.context.SQL_query} />
                                                 </div>
                                             )}
                                             {chat.context.query_description && (
-                                                <div className="query-description my-4">
+                                                <div className="query-description my-1">
                                                     <p>{chat.context.query_description}</p>
                                                 </div>
                                             )}
@@ -191,12 +191,12 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                 <div className="message-content">
                                     {agent && <div className="my-2">{agent}</div>}
                                     {SQL_query && (
-                                        <div className="code-editor-container my-4">
+                                        <div className="code-editor-container my-1">
                                             <CodeEditor SQL_query={SQL_query} />
                                         </div>
                                     )}
                                     {query_description && (
-                                        <div className="query-description my-4">
+                                        <div className="query-description my-1">
                                             <p>{query_description}</p>
                                         </div>
                                     )}
@@ -206,7 +206,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                     {(SQL_query && DB_response.length > 0) && (
                                         <div className="mx-4">
                                             <button
-                                                className="btn-black p-2 mt-4 w-100"
+                                                className="btn-black p-2 mt-1 w-100"
                                                 onClick={() => handleDownload(chatLogId)}
                                             >
                                                 <i className="bi bi-download me-2 p-2"></i>Download Report
