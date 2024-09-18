@@ -9,7 +9,7 @@ const FollowupButtons = ({ followups, onFollowupClick }) => {
         {followups.map((followup, idx) => (
           <div className="col-6 col-md-4 mb-2 d-flex" key={idx}>
             <button
-              className="btn-green w-100 p-2"
+              className="btn-green w-100 p-1"
               onClick={() => onFollowupClick(followup)}
             >
               {followup}
