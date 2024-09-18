@@ -25,11 +25,12 @@
         white-space: pre-wrap;
 
         &.ai {
-            border: 1px solid $text-black;
+            border: 1px solid rgba(0, 0, 0, 0.2);
             border-radius: 10px 10px 10px 0px; 
             align-self: flex-start;
             text-align: left; 
             background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         &.human {
@@ -38,6 +39,7 @@
             align-self: flex-end;
             text-align: right; 
             background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     }
 }
@@ -45,3 +47,7 @@
 
 
 
+
+.chat-content {
+    scroll-behavior: smooth;
+}

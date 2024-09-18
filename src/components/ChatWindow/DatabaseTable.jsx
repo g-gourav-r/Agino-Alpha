@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Line, Bar } from "react-chartjs-2";
-import createApiCall, { POST } from "../api/api.jsx";
+import createApiCall, { POST, GET } from "../api/api.jsx";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import html2canvas from "html2canvas";
 
@@ -8,6 +8,9 @@ import html2canvas from "html2canvas";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
 const getGraphData = createApiCall("graphData", POST);
+const downloadReportApi = createApiCall("getSheet", GET);
+
+
 
 const DatabaseTable = ({ DB_response, ChatLogId }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,6 +58,28 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
     setSelectedSecondHeader("");
   };
 
+  const handleDownload = async (ChatLogId) => {
+    const token = localStorage.getItem('token');
+  
+    try {
+      const response = await downloadReportApi({
+        urlParams: { ChatLogId },
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+  
+      console.log('Download response:', response); // Log response for debugging
+  
+      if (response && response.url) {
+        window.open(response.url, '_blank');
+      } else {
+        console.error("No URL found in the response.");
+      }
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      setErrorMessage(error.message || 'Failed to download report');
+    }
+  };
+  
   // Handle the graph generation after selecting dropdowns
   const handleGenerateGraphSubmit = () => {
     const token = localStorage.getItem("token"); // Ensure 'token' is the correct key
@@ -118,11 +143,7 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
     const graphElement = document.getElementById("graph-container");
     html2canvas(graphElement).then((canvas) => {
       canvas.toBlob((blob) => {
-        navigator.clipboard.write([
-          new ClipboardItem({
-            [blob.type]: blob,
-          }),
-        ]);
+        navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
         alert("Graph copied to clipboard!");
       });
     });
@@ -131,7 +152,7 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
   return (
     <>
       <div style={scrollableContainerStyle}>
-        <table className="table table-striped table-bordered table-hover">
+        <table className="table table-bordered table-hover">
           <thead>
             <tr>
               {headers.map((key) => (
@@ -156,46 +177,22 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
         <nav aria-label="Page navigation">
           <ul className="pagination justify-content-center mt-3">
             <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-              <button
-                className="page-link text-black"
-                onClick={() => handlePageChange(1)}
-                aria-label="First"
-              >
+              <button className="page-link text-black" onClick={() => handlePageChange(1)} aria-label="First">
                 <span aria-hidden="true">&laquo;&laquo;</span>
               </button>
             </li>
             <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-              <button
-                className="page-link text-black"
-                onClick={() => handlePageChange(currentPage - 1)}
-                aria-label="Previous"
-              >
+              <button className="page-link text-black" onClick={() => handlePageChange(currentPage - 1)} aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
               </button>
             </li>
-            <li
-              className={`page-item ${
-                currentPage === totalPages ? "disabled" : ""
-              }`}
-            >
-              <button
-                className="page-link text-black"
-                onClick={() => handlePageChange(currentPage + 1)}
-                aria-label="Next"
-              >
+            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+              <button className="page-link text-black" onClick={() => handlePageChange(currentPage + 1)} aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
               </button>
             </li>
-            <li
-              className={`page-item ${
-                currentPage === totalPages ? "disabled" : ""
-              }`}
-            >
-              <button
-                className="page-link text-black"
-                onClick={() => handlePageChange(totalPages)}
-                aria-label="Last"
-              >
+            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+              <button className="page-link text-black" onClick={() => handlePageChange(totalPages)} aria-label="Last">
                 <span aria-hidden="true">&raquo;&raquo;</span>
               </button>
             </li>
@@ -204,14 +201,21 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
       )}
 
       {/* Generate Graph Button */}
-      <div className="mx-4">
-        <button
-          className="btn-black p-2 mt-1 w-100"
-          onClick={handleGenerateGraph}
-        >
-          <i className="bi bi-download me-2 p-2"></i>Generate Graph
-        </button>
-      </div>
+      <div className="d-flex mt-1 mx-2">
+      <button
+        className="btn-black btn-sm px-1 d-flex align-items-center"
+        onClick={handleGenerateGraph}
+        style={{ marginRight: '0.5rem' }}
+      >
+        <i className="bi bi-download me-2"></i>Generate Graph
+      </button>
+      <button
+        className="btn-black btn-sm p-1 d-flex align-items-center"
+        onClick={() => handleDownload()}
+      >
+        <i className="bi bi-download me-2"></i>Download Report
+      </button>
+    </div>
 
       {/* Modal for Graph Generation */}
       {showModal && (
@@ -220,29 +224,16 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Generate Graph</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={handleCloseModal}
-                ></button>
+                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
               </div>
               <div className="modal-body">
                 {/* Dropdown for first header */}
                 <div className="form-group">
                   <label htmlFor="first-header-select">Select X-axis</label>
-                  <select
-                    className="form-control"
-                    id="first-header-select"
-                    value={selectedFirstHeader}
-                    onChange={(e) => setSelectedFirstHeader(e.target.value)}
-                  >
-                    <option value="" disabled>
-                      Select an option
-                    </option>
+                  <select className="form-control" id="first-header-select" value={selectedFirstHeader} onChange={(e) => setSelectedFirstHeader(e.target.value)}>
+                    <option value="" disabled>Select an option</option>
                     {headers.map((header) => (
-                      <option key={header} value={header}>
-                        {header}
-                      </option>
+                      <option key={header} value={header}>{header}</option>
                     ))}
                   </select>
                 </div>
@@ -250,90 +241,44 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
                 {/* Dropdown for second header */}
                 <div className="form-group mt-3">
                   <label htmlFor="second-header-select">Select Y-axis</label>
-                  <select
-                    className="form-control"
-                    id="second-header-select"
-                    value={selectedSecondHeader}
-                    onChange={(e) => setSelectedSecondHeader(e.target.value)}
-                    disabled={!selectedFirstHeader}
-                  >
-                    <option value="" disabled>
-                      Select an option
-                    </option>
-                    {headers
-                      .filter((header) => header !== selectedFirstHeader)
-                      .map((header) => (
-                        <option key={header} value={header}>
-                          {header}
-                        </option>
-                      ))}
+                  <select className="form-control" id="second-header-select" value={selectedSecondHeader} onChange={(e) => setSelectedSecondHeader(e.target.value)} disabled={!selectedFirstHeader}>
+                    <option value="" disabled>Select an option</option>
+                    {headers.map((header) => (
+                      <option key={header} value={header}>{header}</option>
+                    ))}
                   </select>
                 </div>
 
                 {/* Dropdown for graph type */}
                 <div className="form-group mt-3">
                   <label htmlFor="graph-type-select">Select Graph Type</label>
-                  <select
-                    className="form-control"
-                    id="graph-type-select"
-                    value={graphType}
-                    onChange={handleGraphTypeChange}
-                  >
+                  <select className="form-control" id="graph-type-select" value={graphType} onChange={handleGraphTypeChange}>
                     <option value="line">Line</option>
                     <option value="bar">Bar</option>
                   </select>
                 </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-primary"
-                  onClick={handleGenerateGraphSubmit}
-                  disabled={!selectedFirstHeader || !selectedSecondHeader}
-                >
-                  Generate
+
+                {/* Display the graph */}
+                <div id="graph-container" className="mt-3">
+                  {graphData && (
+                    graphType === "line" ? (
+                      <Line data={graphData} options={chartOptions} />
+                    ) : (
+                      <Bar data={graphData} options={chartOptions} />
+                    )
+                  )}
+                </div>
+
+                <button className="btn btn-primary mt-3" onClick={handleGenerateGraphSubmit}>
+                  Generate Graph
                 </button>
-                <button
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                >
-                  Cancel
+
+                <button className="btn btn-secondary mt-3 ms-2" onClick={handleCopyGraph}>
+                  Copy Graph
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Render Chart.js Graph */}
-      {graphData && (
-        <div id="graph-container" className="mt-5">
-          {graphType === "line" && (
-            <Line
-              data={{
-                labels: graphData.labels,
-                datasets: graphData.datasets,
-              }}
-              options={chartOptions}
-            />
-          )}
-          {graphType === "bar" && (
-            <Bar
-              data={{
-                labels: graphData.labels,
-                datasets: graphData.datasets,
-              }}
-              options={chartOptions}
-            />
-          )}
-        </div>
-      )}
-
-      {/* Copy Graph Button */}
-      {graphData && (
-        <div className="mx-4 mt-4">
-          <button className="btn btn-secondary w-100" onClick={handleCopyGraph}>
-            <i className="bi bi-clipboard me-2"></i>Copy Graph
-          </button>
         </div>
       )}
     </>

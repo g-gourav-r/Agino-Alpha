@@ -176,11 +176,12 @@
   white-space: pre-wrap;
 }
 .chat-content .chat-bubble.ai {
-  border: 1px solid #333;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px 10px 10px 0px;
   align-self: flex-start;
   text-align: left;
   background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .chat-content .chat-bubble.human {
   border: 1px solid #09ba6e;
@@ -188,6 +189,11 @@
   align-self: flex-end;
   text-align: right;
   background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-content {
+  scroll-behavior: smooth;
 }
 
 .modal-overlay {
@@ -226,38 +232,39 @@
 
 .code-editor-container {
   position: relative;
-  background-color: #1e1e1e;
-  color: #dcdcdc;
-  padding: 15px;
-  border-radius: 5px;
-  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
   max-width: 100%;
-  max-height: 300px;
+  max-height: 200px;
 }
 
 .code-block {
   white-space: pre-wrap;
   word-wrap: break-word;
   margin: 0;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 14px;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 10px;
 }
 
 .copy-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  color: white;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  color: #e0e0e0;
   border: none;
   background-color: transparent;
-  padding: 5px 10px;
+  padding: 4px;
   cursor: pointer;
   z-index: 1;
 }
-.copy-button.hover {
-  background-color: white;
-  border-radius: 10px;
-  color: #1e1e1e;
+.copy-button:hover {
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  color: #2e2e2e;
 }
 
 .notepad-header {

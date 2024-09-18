@@ -15,15 +15,13 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     const chatContentRef = useRef(null);
 
     const newMessageApi = createApiCall("newMessage", POST);
-    const downloadReportApi = createApiCall("getSheet", GET);
     const getChatHistoryApi = createApiCall("chatlogBySessionId", GET);
 
-    // Reset chat when a new chat is started
     useEffect(() => {
         if (isNewChat) {
-            setMessages([]); // Clear previous messages
-            localStorage.removeItem('sessionId'); // Ensure sessionId is cleared
-            resetNewChat(); // Reset the flag after the chat is cleared
+            setMessages([]);
+            localStorage.removeItem('sessionId');
+            resetNewChat();
         }
     }, [isNewChat, resetNewChat]);
 
@@ -34,55 +32,48 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                 
                 try {
                     const response = await getChatHistoryApi({
-                        urlParams: { sessionId: selectedChatId }, // Pass selectedChatId as sessionId
-                        headers: {
-                            'Authorization': `Bearer ${token}` // Add token for authentication
-                        }
+                        urlParams: { sessionId: selectedChatId },
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
 
                     if (response && response.data) {
-                        // Save the new sessionId in localStorage
                         localStorage.setItem('sessionId', selectedChatId);
 
-                        // Map through the data to set messages
-                        const newMessages = response.data.map((chat) => {
-                            return [
-                                {
-                                    id: chat._id + "_human", // Unique id for each message
-                                    sender: "human",
-                                    message: chat.message[0].human
-                                },
-                                {
-                                    id: chat._id + "_ai", // Unique id for each message
-                                    sender: "ai",
-                                    message: (
-                                        <div className="message-content">
-                                            <div>{chat.context.agent}</div>
-                                            {chat.context.SQL_query && (
-                                                <div className="code-editor-container my-1">
-                                                    <CodeEditor SQL_query={chat.context.SQL_query} />
-                                                </div>
-                                            )}
-                                            {chat.context.query_description && (
-                                                <div className="query-description my-1">
-                                                    <p>{chat.context.query_description}</p>
-                                                </div>
-                                            )}
-                                            {chat.context.DB_response && (
-                                                <div className="database-table-container">
-                                                    <DatabaseTable   DB_response={chat.context.DB_response} ChatLogId={chat._id}  />
-                                                </div>
-                                            )}
-                                            {chat.context.followup.length > 0 && (
-                                                <FollowupButtons followups={chat.context.followup} onFollowupClick={handleFollowupClick} />
-                                            )}
-                                        </div>
-                                    )
-                                }
-                            ];
-                        }).flat(); // Flatten the array to have individual message objects
+                        const newMessages = response.data.map((chat) => [
+                            {
+                                id: chat._id + "_human",
+                                sender: "human",
+                                message: chat.message[0].human
+                            },
+                            {
+                                id: chat._id + "_ai",
+                                sender: "ai",
+                                message: (
+                                    <div className="message-content">
+                                        <div>{chat.context.agent}</div>
+                                        {chat.context.SQL_query && (
+                                            <div className="code-editor-container my-1">
+                                                <CodeEditor SQL_query={chat.context.SQL_query} />
+                                            </div>
+                                        )}
+                                        {chat.context.query_description && (
+                                            <div className="query-description my-1">
+                                                <p>{chat.context.query_description}</p>
+                                            </div>
+                                        )}
+                                        {chat.context.DB_response && (
+                                            <div className="database-table-container">
+                                                <DatabaseTable DB_response={chat.context.DB_response} ChatLogId={chat._id} />
+                                            </div>
+                                        )}
+                                        {chat.context.followup.length > 0 && (
+                                            <FollowupButtons followups={chat.context.followup} onFollowupClick={handleFollowupClick} />
+                                        )}
+                                    </div>
+                                )
+                            }
+                        ]).flat();
 
-                        // Update the messages state with the new messages
                         setMessages(newMessages);
                     } else {
                         console.error('No chat history found.');
@@ -93,36 +84,23 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
             }
         };
     
-        fetchChatHistory(); // Call the async function
-    }, [selectedChatId]); // Ensure `getChatHistoryApi` is not a dependency
+        fetchChatHistory();
+    }, [selectedChatId]);
 
     useEffect(() => {
         if (chatContentRef.current) {
-            chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+            const lastHumanMessage = [...chatContentRef.current.children]
+                .reverse()
+                .find(child => child.classList.contains('chat-bubble') && child.classList.contains('human'));
+
+            if (lastHumanMessage) {
+                chatContentRef.current.scrollTop = lastHumanMessage.offsetTop - 100;
+            } else {
+                // If no human message is found, scroll to the bottom
+                chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+            }
         }
     }, [messages]);
-
-    const handleDownload = async (chatLogId) => {
-        const token = localStorage.getItem('token'); 
-    
-        try {
-            const response = await downloadReportApi({
-                urlParams: { chatLogId },  
-                headers: {
-                    'Authorization': `Bearer ${token}`,  
-                },
-            });
-
-            if (response && response.url) {
-                window.open(response.url, '_blank');
-            } else {
-                console.error("No URL found in the response.");
-            }    
-        } catch (error) {
-            console.error('Error downloading report:', error);
-            setErrorMessage(error.message || 'Failed to download report');
-        }
-    };
 
     const handleSend = async (messageToSend) => {
         if (!messageToSend.trim()) return;
@@ -130,7 +108,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
         const currentSessionId = localStorage.getItem("sessionId");
         const token = localStorage.getItem("token");
 
-        // Add user's message to the chat
         const userMessage = {
             id: Date.now(),
             sender: "human",
@@ -138,7 +115,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
         };
         setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-        // Add placeholder message for API response
         const placeholderMessage = {
             id: Date.now() + 1,
             sender: "ai",
@@ -149,10 +125,9 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
         setNewMessage("");
         setLoadingMessageId(placeholderMessage.id);
-        setErrorMessage("");  // Reset error message
+        setErrorMessage("");
 
         try {
-            // Make API request
             const data = await newMessageApi({
                 body: {
                     email: localStorage.getItem('email'),
@@ -162,9 +137,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                     newSession: !currentSessionId,
                     sessionId: currentSessionId || undefined,
                 },
-                headers: {
-                    'Authorization': `Bearer ${token}`,  // Add the Authorization header
-                },
+                headers: { 'Authorization': `Bearer ${token}` },
             });
 
             const {
@@ -181,7 +154,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                 localStorage.setItem("sessionId", sessionId);
             }
 
-            // Update messages state
             setMessages((prevMessages) =>
                 prevMessages.map((msg) =>
                     msg.id === placeholderMessage.id
@@ -189,7 +161,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                             ...msg,
                             message: (
                                 <div className="message-content">
-                                    {agent && <div className="my-2">{agent}</div>}
+                                    {agent && <div className="py-1">{agent}</div>}
                                     {SQL_query && (
                                         <div className="code-editor-container my-1">
                                             <CodeEditor SQL_query={SQL_query} />
@@ -203,16 +175,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                     <div className="database-table-container">
                                         <DatabaseTable DB_response={DB_response} ChatLogId={chatLogId} />
                                     </div>
-                                    {(SQL_query && DB_response.length > 0) && (
-                                        <div className="mx-4">
-                                            <button
-                                                className="btn-black p-2 mt-1 w-100"
-                                                onClick={() => handleDownload(chatLogId)}
-                                            >
-                                                <i className="bi bi-download me-2 p-2"></i>Download Report
-                                            </button>
-                                        </div>
-                                    )}
                                     {followup.length > 0 && (
                                         <FollowupButtons followups={followup} onFollowupClick={handleFollowupClick} />
                                     )}
@@ -226,10 +188,8 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
         } catch (error) {
             console.error("Error sending message:", error);
 
-            // Extract the error message
             const errorMessage = error?.message || 'An unknown error occurred';
 
-            // Update messages state to show error
             setMessages((prevMessages) =>
                 prevMessages.map((msg) =>
                     msg.id === placeholderMessage.id
@@ -246,13 +206,12 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                 )
             );
 
-            setErrorMessage(errorMessage);  // Set the error message state
+            setErrorMessage(errorMessage);
         } finally {
             setLoadingMessageId(null);
         }
     };
 
-    // Define handleFollowupClick
     const handleFollowupClick = (followupId) => {
         handleSend(followupId);
     };

@@ -10,7 +10,7 @@ function Header({ currentPage }) {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg d-flex justify-content-between mx-2 mt-1 rounded">
+    <nav className="navbar navbar-expand-lg d-flex justify-content-between mx-2 mt-1 p-0 rounded">
       <div className="container-fluid header">
         <a className="navbar-brand" href="#">Agino</a>
         <button

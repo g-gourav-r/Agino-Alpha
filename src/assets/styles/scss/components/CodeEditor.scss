@@ -1,37 +1,37 @@
 .code-editor-container {
-    position: relative;
-    background-color: #1e1e1e;
-    color: #dcdcdc;
-    padding: 15px;
+  position: relative;
+  background-color: #2e2e2e;
+  color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 200px;
+}
+
+.code-block {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 10px;
+}
+
+.copy-button {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  color: #e0e0e0;
+  border: none;
+  background-color: transparent;
+  padding: 4px;
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background-color: #e0e0e0;
     border-radius: 5px;
-    overflow: auto;
-    max-width: 100%;
-    max-height: 300px;
+    color: #2e2e2e;
   }
-  
-  .code-block {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin: 0;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 14px;
-  }
-  
-  .copy-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: white;
-    border: none;
-    background-color: transparent;
-    padding: 5px 10px;
-    cursor: pointer;
-    z-index: 1;
-  
-    &.hover {
-      background-color: white;
-      border-radius: 10px;
-      color: #1e1e1e;
-    }
-  }
-  
+}
