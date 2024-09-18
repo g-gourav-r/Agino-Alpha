@@ -48,7 +48,9 @@ function ChatHistory({ onStartNewChat, onSelectChat   }) {
             >
               <div className="p-1 text-truncate">
                 {chat._id} <br />
-                {new Date(chat.startTime).toLocaleString()}
+                <span style={{ fontSize: '0.6rem', color: '#6c757d' }}>
+  {new Date(chat.startTime).toLocaleString()}
+</span>
               </div>
             </button>
           ))}
