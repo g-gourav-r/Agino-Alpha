@@ -7,27 +7,37 @@ import FollowupButtons from './FollowupButtons.jsx';
 import createApiCall, { POST, GET } from '../api/api.jsx';
 
 function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
+    const [selectedDatabase, setSelectedDatabase] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [loadingMessageId, setLoadingMessageId] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
+    const [isChatFromHistory, setIsChatFromHistory] = useState(false);
 
     const chatContentRef = useRef(null);
 
     const newMessageApi = createApiCall("newMessage", POST);
     const getChatHistoryApi = createApiCall("chatlogBySessionId", GET);
 
+    const handleSelectDatabase = (db) => {
+        setSelectedDatabase(db);
+        localStorage.setItem('database', db.database);
+    };
+
     useEffect(() => {
         if (isNewChat) {
             setMessages([]);
             localStorage.removeItem('sessionId');
+            localStorage.removeItem('database');
             resetNewChat();
+            setIsChatFromHistory(false);
         }
     }, [isNewChat, resetNewChat]);
 
     useEffect(() => {
         const fetchChatHistory = async () => {
             if (selectedChatId) {
+                setIsChatFromHistory(true);
                 const token = localStorage.getItem('token');
                 
                 try {
@@ -38,7 +48,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
                     if (response && response.data) {
                         localStorage.setItem('sessionId', selectedChatId);
-
                         const newMessages = response.data.map((chat) => [
                             {
                                 id: chat._id + "_human",
@@ -105,6 +114,12 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     const handleSend = async (messageToSend) => {
         if (!messageToSend.trim()) return;
 
+        const selectedDatabase = localStorage.getItem('database');
+        if (!selectedDatabase) {
+            alert("Please select a database before sending a message.");
+            return;
+        }
+
         const currentSessionId = localStorage.getItem("sessionId");
         const token = localStorage.getItem("token");
 
@@ -133,7 +148,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                     email: localStorage.getItem('email'),
                     psid: localStorage.getItem('psid'),
                     message: messageToSend,
-                    database: "classicmodels",
+                    database: localStorage.getItem('database'),
                     newSession: !currentSessionId,
                     sessionId: currentSessionId || undefined,
                 },
@@ -219,7 +234,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     return (
         <div className="d-flex flex-column h-100">
             <div className="flex-shrink-0">
-                <ChatHeader />
+                <ChatHeader  onSelectDatabase={handleSelectDatabase} isChatFromHistory={isChatFromHistory} />
             </div>
             <div
                 className="chat-content flex-grow-1 overflow-auto p-3 mx-2"
@@ -237,7 +252,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                 ))}
             </div>
             <div className="flex-shrink-0 mb-2">
-                <ChatInput onSend={handleSend} />
+                <ChatInput onSend={handleSend}  disabled={isChatFromHistory}/>
             </div>
         </div>
     );
