@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import createApiCall from "../../api/api";
 
 const getConnectedDB = createApiCall("connecteddatabases");
 
 function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
-  const [connectedDatabases, setConnectedDatabases] = useState([]); // State to store connected databases
+  const [connectedDatabases, setConnectedDatabases] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [selectedDatabase, setSelectedDatabase] = useState(null); // Track selected database
+  const [selectedDatabase, setSelectedDatabase] = useState(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchConnectedDBs = async () => {
       const token = localStorage.getItem('token');
       try {
         const response = await getConnectedDB({
-          headers: { 'Authorization': `Bearer ${token}` }, // Pass token in headers
+          headers: { 'Authorization': `Bearer ${token}` },
         });
 
         if (response && response.data) {
-          setConnectedDatabases(response.data); // Assuming the data structure contains the list
+          setConnectedDatabases(response.data);
         } else {
           setErrorMessage('Failed to fetch connected databases');
         }
@@ -28,14 +29,13 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
     };
 
     fetchConnectedDBs();
-  }, []); // Empty dependency array means this will run only once on mount
+  }, []);
 
   const sessionID = localStorage.getItem('sessionId');
 
-  // Handle selecting a database
   const handleSelectDatabase = (db) => {
-    setSelectedDatabase(db); // Set the selected database
-    onSelectDatabase(db); // Pass selected database to the parent component
+    setSelectedDatabase(db);
+    onSelectDatabase(db);
   };
 
   return (
@@ -43,18 +43,18 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
       <div className="bg-white m-2 border px-2 rounded d-flex align-items-center justify-content-between">
         <p className="my-auto">Session ID: {sessionID}</p>
 
-        <div className="dropdown">
-          <button
+        <div className={`dropdown`} style={{ visibility: isChatFromHistory ? 'hidden' : 'visible' }}>
+        <button
             className="btn-outline dropdown-toggle p-2"
             type="button"
             id="dropdownMenuButton1"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            disabled={isChatFromHistory} // Disable button if chat is from history
+            disabled={isChatFromHistory}
           >
             <i className="bi bi-database-fill"></i>
           </button>
-          <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <ul className={"dropdown-menu"} aria-labelledby="dropdownMenuButton1">
             {errorMessage && (
               <li className="dropdown-item text-danger">{errorMessage}</li>
             )}
@@ -63,7 +63,7 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
                 <li
                   key={index}
                   className="dropdown-item"
-                  onClick={() => handleSelectDatabase(db)} // Handle selecting a database
+                  onClick={() => handleSelectDatabase(db)}
                 >
                   {db.aliasName}
                 </li>
@@ -74,7 +74,6 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
           </ul>
         </div>
 
-        {/* Display selected database if available */}
         {selectedDatabase && (
           <div className="p-2">
             <i className="bi bi-database-fill me-2"></i>
