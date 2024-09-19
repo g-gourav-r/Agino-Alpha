@@ -46,11 +46,11 @@ function ChatHistory({ onStartNewChat, onSelectChat   }) {
               value={chat._id}
               onClick={() => onSelectChat(chat._id)}
             >
-              <div className="p-1 text-truncate">
-                {chat._id} <br />
+              <div className="p-1 text-truncate text-start">
+                {chat.input} <br/>
                 <span style={{ fontSize: '0.6rem', color: '#6c757d' }}>
-  {new Date(chat.startTime).toLocaleString()}
-</span>
+                  {new Date(chat.startTime).toLocaleString()}
+                </span>
               </div>
             </button>
           ))}

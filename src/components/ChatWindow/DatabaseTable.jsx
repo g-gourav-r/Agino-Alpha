@@ -58,12 +58,12 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
     setSelectedSecondHeader("");
   };
 
-  const handleDownload = async (ChatLogId) => {
+  const handleDownload = async () => {
     const token = localStorage.getItem('token');
   
     try {
       const response = await downloadReportApi({
-        urlParams: { ChatLogId },
+        urlParams: { chatLogId : ChatLogId },
         headers: { 'Authorization': `Bearer ${token}` },
       });
   
@@ -200,6 +200,17 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
         </nav>
       )}
 
+                {/* Display the graph */}
+                <div id="graph-container p-1">
+                  {graphData && (
+                    graphType === "line" ? (
+                      <Line data={graphData} options={chartOptions} />
+                    ) : (
+                      <Bar data={graphData} options={chartOptions} />
+                    )
+                  )}
+                </div>
+
       {/* Generate Graph Button */}
       <div className="d-flex mt-1 mx-2">
       <button
@@ -211,7 +222,7 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
       </button>
       <button
         className="btn-black btn-sm p-1 d-flex align-items-center"
-        onClick={() => handleDownload()}
+        onClick={handleDownload}
       >
         <i className="bi bi-download me-2"></i>Download Report
       </button>
@@ -257,22 +268,9 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
                     <option value="bar">Bar</option>
                   </select>
                 </div>
-
-                {/* Display the graph */}
-                <div id="graph-container" className="mt-3">
-                  {graphData && (
-                    graphType === "line" ? (
-                      <Line data={graphData} options={chartOptions} />
-                    ) : (
-                      <Bar data={graphData} options={chartOptions} />
-                    )
-                  )}
-                </div>
-
                 <button className="btn btn-primary mt-3" onClick={handleGenerateGraphSubmit}>
                   Generate Graph
                 </button>
-
                 <button className="btn btn-secondary mt-3 ms-2" onClick={handleCopyGraph}>
                   Copy Graph
                 </button>
