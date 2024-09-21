@@ -8,6 +8,8 @@ Modal.setAppElement("#root");
 function AddDataSource() {
   const [data, setData] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [enableAddDataBase,setDatabaseEnable] = useState(false);
+  const [dataBaseFormFields,setdataBaseFormFields] = useState({});
   const [currentDb, setCurrentDb] = useState(null);
   const [formFields, setFormFields] = useState({});
   const [loading, setLoading] = useState(false);
@@ -17,12 +19,11 @@ function AddDataSource() {
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
   
-  // Handle database form modal
   const [dbModalIsOpen, setDbModalIsOpen] = useState(false);
   const [formSubmitStatus, setFormSubmitStatus] = useState("");
 
   useEffect(() => {
-    // Fetch data from API
+
     const AddDataSourceApi = createApiCall("databaseForm", GET);
 
     AddDataSourceApi({
@@ -50,6 +51,8 @@ function AddDataSource() {
 
   const closeModal = () => {
     setDbModalIsOpen(false);
+    setDatabaseEnable(false);
+    setFormSubmitStatus(false);
   };
 
   const handleFormChange = (e) => {
@@ -57,8 +60,30 @@ function AddDataSource() {
     setFormFields((prevFields) => ({
       ...prevFields,
       [name]: value,
+      dbtype: currentDb.dbtype,
     }));
   };
+
+  const handleAddDataBase = () =>{
+    const SubmitDataBaseAPI = createApiCall("database", POST);
+    dataBaseFormFields.schema = localStorage.getItem("schema");
+
+    SubmitDataBaseAPI({
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: dataBaseFormFields,
+    }).then((response) => {
+      if(response.status){
+        setFormSubmitStatus(response.message);
+        localStorage.removeItem("schema");
+      }
+    }).catch((error) => {
+      setFormSubmitStatus(error.message);
+      localStorage.removeItem("schema");
+      setDatabaseEnable(false);
+    })
+  }
 
   const handleFormSubmit = () => {
     // Validate the form
@@ -75,12 +100,14 @@ function AddDataSource() {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(formFields),
+      body: formFields,
     })
       .then((response) => {
         if (response.status) {
-          setFormSubmitStatus(response.status);
-          setDbModalIsOpen(false);
+          localStorage.setItem("schema",JSON.stringify(response.table));
+          setFormSubmitStatus(response.message);
+          setDatabaseEnable(true);
+          setdataBaseFormFields(formFields);
         } else {
           setFormSubmitStatus("Failed to submit the form.");
         }
@@ -203,15 +230,20 @@ function AddDataSource() {
           <div className="text-start">
             <button
               type="button"
-              className="m-2 p-2 px-4 mb-0 btn-green"
+              className="my-2 me-3 p-2 px-4 mb-0 btn-green"
               onClick={handleFormSubmit}
             >
-              {loading ? (
-                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              ) : (
-                "Submit"
-              )}
+              Test Connection
             </button>
+            {enableAddDataBase && (
+              <button
+                type="button"
+                className="my-2 p-2 px-4 mb-0 btn-green"
+                onClick={handleAddDataBase}
+              >
+                Add Connection
+              </button>
+            )}
           </div>
           {formSubmitStatus && <p className="mt-3 text-success">{formSubmitStatus}</p>}
         </Modal>
