@@ -93,6 +93,8 @@ function AddDataSource() {
 
   const handleFileUpload = () => {
     setFileModalIsOpen(true);
+    setUploadStatus("");
+
   };
 
   const closeFileModal = () => {
@@ -134,7 +136,7 @@ function AddDataSource() {
       })
       .catch((error) => {
         setLoading(false);
-        setUploadStatus("Error uploading file.");
+        setUploadStatus(error.message);
         console.error("Error uploading file:", error);
       });
   };
@@ -235,6 +237,7 @@ function AddDataSource() {
               <input
                 type="file"
                 className="form-control"
+                accept=".xlsx, .xls, .csv"
                 onChange={handleFileChange}
               />
             </div>
