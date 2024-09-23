@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import createApiCall, { GET } from "../api/api.jsx";
 
-function ChatHistory({ onStartNewChat, onSelectChat   }) {
+function ChatHistory({ onStartNewChat, onSelectChat }) {
   const [chatHistory, setChatHistory] = useState([]);
+  const [loading, setLoading] = useState(true); // Track loading state
 
   const token = localStorage.getItem('token');
   
   const ChatHistoryApiCall = createApiCall("chatHistory", GET);
 
-
   useEffect(() => {
+    setLoading(true); // Start loading
     ChatHistoryApiCall({
       headers: {
         Authorization: `Bearer ${token}`,
@@ -23,6 +24,9 @@ function ChatHistory({ onStartNewChat, onSelectChat   }) {
       })
       .catch((error) => {
         console.error("Error fetching chat history:", error);
+      })
+      .finally(() => {
+        setLoading(false); // Stop loading after API call
       });
   }, []);
 
@@ -38,22 +42,30 @@ function ChatHistory({ onStartNewChat, onSelectChat   }) {
         style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}
       >
         <div className="w-100">
-          {chatHistory.map((chat) => (
-            <button
-              key={chat._id}
-              className="btn-white m-2 ms-3"
-              style={{ width: "90%" }}
-              value={chat._id}
-              onClick={() => onSelectChat(chat._id)}
-            >
-              <div className="p-1 text-truncate text-start">
-                {chat.input} <br/>
-                <span style={{ fontSize: '0.6rem', color: '#6c757d' }}>
-                  {new Date(chat.startTime).toLocaleString()}
-                </span>
+          {loading ? ( // Show loader if loading
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
+              <div className="spinner-grow text-success" role="status">
+                <span className="sr-only d-none">Loading...</span>
               </div>
-            </button>
-          ))}
+            </div>
+          ) : (
+            chatHistory.map((chat) => (
+              <button
+                key={chat._id}
+                className="btn-white m-2 ms-3"
+                style={{ width: "90%" }}
+                value={chat._id}
+                onClick={() => onSelectChat(chat._id)}
+              >
+                <div className="p-1 text-truncate text-start">
+                  {chat.input} <br />
+                  <span style={{ fontSize: "0.6rem", color: "#6c757d" }}>
+                    {new Date(chat.startTime).toLocaleString()}
+                  </span>
+                </div>
+              </button>
+            ))
+          )}
         </div>
       </div>
     </div>

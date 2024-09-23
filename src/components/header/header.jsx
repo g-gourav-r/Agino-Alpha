@@ -28,7 +28,7 @@ function Header({ currentPage }) {
           <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <a
-                className={`nav-link ${currentPage === 'chat' ? 'active' : ''}`}
+                className={`px-2 nav-link ${currentPage === 'chat' ? 'active' : ''}`}
                 aria-current="page"
                 onClick={() => navigate("/chat")}
               >
@@ -37,7 +37,7 @@ function Header({ currentPage }) {
             </li>
             <li className="nav-item">
               <a
-                className="nav-link disabled"
+                className="px-2 nav-link disabled"
                 href="#"
                 onClick={(e) => e.preventDefault()}
               >
@@ -46,7 +46,7 @@ function Header({ currentPage }) {
             </li>
             <li className="nav-item">
               <a
-                className="nav-link disabled"
+                className="px-2 nav-link disabled"
                 href="#"
                 onClick={(e) => e.preventDefault()}
               >
@@ -55,7 +55,7 @@ function Header({ currentPage }) {
             </li>
             <li className="nav-item">
               <a
-                className={`nav-link ${currentPage === 'notepad' ? 'active' : ''}`}
+                className={`px-2 nav-link ${currentPage === 'notepad' ? 'active' : ''}`}
                 aria-current="page"
                 onClick={() => navigate("/notepad")}
               >
@@ -64,7 +64,7 @@ function Header({ currentPage }) {
             </li>
             <li className="nav-item">
               <a
-                className={`nav-link ${currentPage === 'data-source' ? 'active' : ''}`}
+                className={`px-2 nav-link ${currentPage === 'data-source' ? 'active' : ''}`}
                 onClick={() => navigate("/dbsource")}
               >
                 Data Source
