@@ -42,8 +42,7 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
     <div>
       <div className="bg-white m-2 border px-2 rounded d-flex align-items-center justify-content-between">
         <p className="my-auto">Session ID: {sessionID}</p>
-
-        <div className={`dropdown`} style={{ visibility: isChatFromHistory ? 'hidden' : 'visible' }}>
+        <div className={`dropdown`} style={{ visibility: isChatFromHistory ? 'hidden' : 'visible', display : selectedDatabase ? 'none': 'block' }}>
         <button
             className="btn-outline dropdown-toggle p-2"
             type="button"
@@ -77,7 +76,7 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
         {selectedDatabase && (
           <div className="p-2">
             <i className="bi bi-database-fill me-2"></i>
-            {selectedDatabase.database}
+            {selectedDatabase.aliasName}
           </div>
         )}
       </div>

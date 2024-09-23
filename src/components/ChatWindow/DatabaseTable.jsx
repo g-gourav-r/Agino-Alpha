@@ -11,8 +11,7 @@ const getGraphData = createApiCall("graphData", POST);
 const downloadReportApi = createApiCall("getSheet", GET);
 
 
-
-const DatabaseTable = ({ DB_response, ChatLogId }) => {
+const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedFirstHeader, setSelectedFirstHeader] = useState("");
@@ -214,17 +213,22 @@ const DatabaseTable = ({ DB_response, ChatLogId }) => {
       {/* Generate Graph Button */}
       <div className="d-flex mt-1 mx-2">
       <button
-        className="btn-black btn-sm px-1 d-flex align-items-center"
+        className="btn-black btn-sm px-1 me-2 d-flex align-items-center"
         onClick={handleGenerateGraph}
-        style={{ marginRight: '0.5rem' }}
       >
-        <i className="bi bi-download me-2"></i>Generate Graph
+        <i className="bi bi-bar-chart me-2"></i>Generate Graph
       </button>
       <button
-        className="btn-black btn-sm p-1 d-flex align-items-center"
+        className="btn-black btn-sm p-1 me-2 d-flex align-items-center"
         onClick={handleDownload}
       >
         <i className="bi bi-download me-2"></i>Download Report
+      </button>
+      <button
+        className="btn-black btn-sm p-1 d-flex align-items-center"
+        onClick={handleShare}
+      >
+        <i className="bi bi-share me-2"></i>Share Report
       </button>
     </div>
 

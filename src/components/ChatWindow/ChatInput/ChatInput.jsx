@@ -22,7 +22,7 @@ function ChatInput({ onSend, disabled }) {
     return (
         <div>
             <div className="mx-2 rounded border d-flex p-2 bg-white">
-                <button className="btn-outline" onClick={() => navigate("/data-source")}>
+                <button className="btn-outline" onClick={() => navigate("/dbsource")}>
                     <i className="bi bi-database-add"></i>
                 </button>
                 <input

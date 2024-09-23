@@ -13,7 +13,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     const [loadingMessageId, setLoadingMessageId] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
     const [isChatFromHistory, setIsChatFromHistory] = useState(false);
-
     const chatContentRef = useRef(null);
 
     const newMessageApi = createApiCall("newMessage", POST);
@@ -72,7 +71,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                         )}
                                         {chat.context.DB_response && (
                                             <div className="database-table-container">
-                                                <DatabaseTable DB_response={chat.context.DB_response} ChatLogId={chat._id} />
+                                                <DatabaseTable DB_response={chat.context.DB_response} ChatLogId={chat._id} handleShare={shareEmail} />
                                             </div>
                                         )}
                                         {chat.context.followup.length > 0 && (
@@ -110,6 +109,54 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
             }
         }
     }, [messages]);
+
+    const shareEmail = () => {
+        const email = 'recipient@example.com'; // Replace with the recipient email address or leave empty for user to fill
+        const subject = encodeURIComponent('Chat Summary');
+        
+        let body = 'Chat Summary:\n\n'; // Initialize body for the email content
+        
+        // Iterate through messages and build the body content
+        messages.forEach((msg) => {
+            if (msg.sender === 'human') {
+                body += `You:\n${msg.message}\n\n`; // Human message
+            } else if (msg.sender === 'ai') {
+                body += `AI:\n${extractMessageContent(msg.message)}\n\n`; // AI message, extract its content
+            }
+        });
+        
+        // Construct the mailto URI with the subject and body
+        const mailtoLink = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(body)}`;
+    
+        // Open the mail draft
+        window.location.href = mailtoLink;
+    };
+    
+    // Helper function to extract content from AI message
+    const extractMessageContent = (messageContent) => {
+        // If messageContent is a JSX element, extract text (simplified, assumes JSX structure is simple)
+        if (typeof messageContent === 'object') {
+            const div = document.createElement('div');
+            div.innerHTML = messageContent.props.children.map(child => {
+                return typeof child === 'string' ? child : extractFromComponent(child);
+            }).join('');
+            return div.textContent || div.innerText || ''; // Return extracted text
+        }
+        return messageContent;
+    };
+    
+    // Helper function to extract text from components like CodeEditor or DatabaseTable
+    const extractFromComponent = (component) => {
+        // Check for SQL queries and database responses
+        if (component.type === CodeEditor) {
+            return `SQL Query:\n${component.props.SQL_query}\n\n`;
+        }
+        if (component.type === DatabaseTable) {
+            return `Database Response:\n${JSON.stringify(component.props.DB_response)}\n\n`;
+        }
+        return '';
+    };
+    
 
     const handleSend = async (messageToSend) => {
         if (!messageToSend.trim()) return;
@@ -188,7 +235,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                                         </div>
                                     )}
                                     <div className="database-table-container">
-                                        <DatabaseTable DB_response={DB_response} ChatLogId={chatLogId} />
+                                        <DatabaseTable DB_response={DB_response} ChatLogId={chatLogId} handleShare={shareEmail}/>
                                     </div>
                                     {followup.length > 0 && (
                                         <FollowupButtons followups={followup} onFollowupClick={handleFollowupClick} />

@@ -232,7 +232,7 @@
 
 .code-editor-container {
   position: relative;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #2e2e2e;
   color: #e0e0e0;
   border-radius: 3px;
   overflow: hidden;
