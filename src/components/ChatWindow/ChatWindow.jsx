@@ -84,7 +84,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                       {chat.context.followup.length > 0 && (
                         <FollowupButtons
                           followups={chat.context.followup}
-                          onFollowupClick={handleFollowupClick}
+                          disabled ={true}
                         />
                       )}
                     </div>

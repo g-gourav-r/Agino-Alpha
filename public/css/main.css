@@ -88,6 +88,13 @@
   color: #333;
 }
 
+.btn-disabled {
+  background-color: rgba(9, 186, 110, 0.5);
+  color: white;
+  border-radius: 6px;
+  border: 1px solid #09ba6e;
+}
+
 .background-image {
   position: absolute;
   top: 0;
