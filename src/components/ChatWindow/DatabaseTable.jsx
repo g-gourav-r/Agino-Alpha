@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
 import createApiCall, { POST, GET } from "../api/api.jsx";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -10,51 +10,42 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 const getGraphData = createApiCall("graphData", POST);
 const downloadReportApi = createApiCall("getSheet", GET);
 
-
 const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedFirstHeader, setSelectedFirstHeader] = useState("");
   const [selectedSecondHeader, setSelectedSecondHeader] = useState("");
-  const [graphData, setGraphData] = useState(null); // Store API graph data
-  const [graphType, setGraphType] = useState("line"); // Store selected graph type (default: line)
+  const [selectedSecondYHeader, setSelectedSecondYHeader] = useState(""); // New state for Y2 header
+  const [graphData, setGraphData] = useState(null);
+  const [graphType, setGraphType] = useState("line");
   const rowsPerPage = 5;
 
   if (!DB_response || DB_response.length === 0) return null;
 
   const headers = Object.keys(DB_response[0]);
-
-  // Calculate total pages
   const totalPages = Math.ceil(DB_response.length / rowsPerPage);
-
-  // Get the data for the current page
-  const currentRows = DB_response.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
+  const currentRows = DB_response.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  
   const scrollableContainerStyle = {
     overflowX: "auto",
     width: "100%",
     marginTop: "1rem",
   };
 
-  // Function to handle page change
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
   };
 
-  // Open modal for graph generation
   const handleGenerateGraph = () => {
     setShowModal(true);
   };
 
-  // Close modal
   const handleCloseModal = () => {
     setShowModal(false);
-    setSelectedFirstHeader(""); // Reset selections when modal closes
+    setSelectedFirstHeader("");
     setSelectedSecondHeader("");
+    setSelectedSecondYHeader(""); // Reset second Y header on close
   };
 
   const handleDownload = async () => {
@@ -66,7 +57,7 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         headers: { 'Authorization': `Bearer ${token}` },
       });
   
-      console.log('Download response:', response); // Log response for debugging
+      console.log('Download response:', response);
   
       if (response && response.url) {
         window.open(response.url, '_blank');
@@ -75,34 +66,32 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
       }
     } catch (error) {
       console.error('Error downloading report:', error);
-      setErrorMessage(error.message || 'Failed to download report');
     }
   };
-  
-  // Handle the graph generation after selecting dropdowns
-  const handleGenerateGraphSubmit = () => {
-    const token = localStorage.getItem("token"); // Ensure 'token' is the correct key
 
+  const handleGenerateGraphSubmit = () => {
+    const token = localStorage.getItem("token");
+    
     const requestData = {
       xaxis: selectedFirstHeader,
       yaxis1: selectedSecondHeader,
+      yaxis2: selectedSecondYHeader, // Include the second Y-axis
       chatLogId: ChatLogId,
     };
 
     getGraphData({
-      body: requestData, // Body with the xaxis and yaxis data
+      body: requestData,
       headers: {
-        Authorization: `Bearer ${token}`, // JWT in Authorization header
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
         const { data } = response;
         if (data && data.labels && data.datasets) {
-          // Ensure there's valid data before setting it
           const hasValidData = data.labels.some(label => label !== null) && data.datasets.some(dataset => dataset.data.some(point => point !== null));
           
           if (hasValidData) {
-            setGraphData(data); // Set valid graph data
+            setGraphData(data);
           } else {
             alert("Cannot generate graph: No valid data returned.");
           }
@@ -114,11 +103,9 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         console.error("Error generating graph:", error);
       });
 
-    // Close the modal after submission
     handleCloseModal();
   };
 
-  // Options for Chart.js
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -132,12 +119,10 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
     },
   };
 
-  // Dropdown to select graph type
   const handleGraphTypeChange = (e) => {
     setGraphType(e.target.value);
   };
 
-  // Copy graph to clipboard
   const handleCopyGraph = () => {
     const graphElement = document.getElementById("graph-container");
     html2canvas(graphElement).then((canvas) => {
@@ -199,38 +184,34 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         </nav>
       )}
 
-                {/* Display the graph */}
-                <div id="graph-container p-1">
-                  {graphData && (
-                    graphType === "line" ? (
-                      <Line data={graphData} options={chartOptions} />
-                    ) : (
-                      <Bar data={graphData} options={chartOptions} />
-                    )
-                  )}
-                </div>
+      {/* Display the graph */}
+      <div id="graph-container" className="p-1">
+        {graphData && (
+          graphType === "line" ? (
+            <Line data={graphData} options={chartOptions} />
+          ) : (
+            <Bar data={graphData} options={chartOptions} />
+          )
+        )}
+      </div>
 
       {/* Generate Graph Button */}
       <div className="d-flex mt-1 mx-2">
-      <button
-        className="btn-black btn-sm px-1 me-2 d-flex align-items-center"
-        onClick={handleGenerateGraph}
-      >
-        <i className="bi bi-bar-chart me-2"></i>Generate Graph
-      </button>
-      <button
-        className="btn-black btn-sm p-1 me-2 d-flex align-items-center"
-        onClick={handleDownload}
-      >
-        <i className="bi bi-download me-2"></i>Download Report
-      </button>
-      <button
-        className="btn-black btn-sm p-1 d-flex align-items-center"
-        onClick={handleShare}
-      >
-        <i className="bi bi-share me-2"></i>Share Report
-      </button>
-    </div>
+        <button className="btn-black btn-sm px-1 me-2 d-flex align-items-center" onClick={handleGenerateGraph}>
+          <i className="bi bi-bar-chart me-2"></i>Generate Graph
+        </button>
+        <button className="btn-black btn-sm p-1 me-2 d-flex align-items-center" onClick={handleDownload}>
+          <i className="bi bi-download me-2"></i>Download Report
+        </button>
+        <button className="btn-black btn-sm p-1 me-2 d-flex align-items-center" onClick={handleShare}>
+          <i className="bi bi-share me-2"></i>Share Report
+        </button>
+        {graphData && (
+          <button className="btn-black btn-sm p-1 d-flex align-items-center" onClick={handleCopyGraph}>
+            <i class="bi bi-copy"></i> Copy Graph
+          </button>
+        )}
+      </div>
 
       {/* Modal for Graph Generation */}
       {showModal && (
@@ -246,38 +227,44 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
                 <div className="form-group">
                   <label htmlFor="first-header-select">Select X-axis</label>
                   <select className="form-control" id="first-header-select" value={selectedFirstHeader} onChange={(e) => setSelectedFirstHeader(e.target.value)}>
-                    <option value="" disabled>Select an option</option>
-                    {headers.map((header) => (
-                      <option key={header} value={header}>{header}</option>
+                    <option value="">Select...</option>
+                    {headers.map((header, index) => (
+                      <option key={index} value={header}>{header}</option>
                     ))}
                   </select>
                 </div>
-
                 {/* Dropdown for second header */}
-                <div className="form-group mt-3">
+                <div className="form-group">
                   <label htmlFor="second-header-select">Select Y-axis</label>
-                  <select className="form-control" id="second-header-select" value={selectedSecondHeader} onChange={(e) => setSelectedSecondHeader(e.target.value)} disabled={!selectedFirstHeader}>
-                    <option value="" disabled>Select an option</option>
-                    {headers.map((header) => (
-                      <option key={header} value={header}>{header}</option>
+                  <select className="form-control" id="second-header-select" value={selectedSecondHeader} onChange={(e) => setSelectedSecondHeader(e.target.value)}>
+                    <option value="">Select...</option>
+                    {headers.map((header, index) => (
+                      <option key={index} value={header}>{header}</option>
                     ))}
                   </select>
                 </div>
-
+                {/* Dropdown for second Y-axis */}
+                <div className="form-group">
+                  <label htmlFor="second-y-header-select">Select Second Y-axis</label>
+                  <select className="form-control" id="second-y-header-select" value={selectedSecondYHeader} onChange={(e) => setSelectedSecondYHeader(e.target.value)}>
+                    <option value="">Select...</option>
+                    {headers.map((header, index) => (
+                      <option key={index} value={header}>{header}</option>
+                    ))}
+                  </select>
+                </div>
                 {/* Dropdown for graph type */}
-                <div className="form-group mt-3">
+                <div className="form-group">
                   <label htmlFor="graph-type-select">Select Graph Type</label>
                   <select className="form-control" id="graph-type-select" value={graphType} onChange={handleGraphTypeChange}>
                     <option value="line">Line</option>
                     <option value="bar">Bar</option>
                   </select>
                 </div>
-                <button className="btn btn-primary mt-3" onClick={handleGenerateGraphSubmit}>
-                  Generate Graph
-                </button>
-                <button className="btn btn-secondary mt-3 ms-2" onClick={handleCopyGraph}>
-                  Copy Graph
-                </button>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
+                <button type="button" className="btn btn-primary" onClick={handleGenerateGraphSubmit}>Generate Graph</button>
               </div>
             </div>
           </div>
