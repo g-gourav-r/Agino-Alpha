@@ -295,12 +295,17 @@ function AddDataSource() {
             </button>
           </div>
           <form>
-            <input
-              type="file"
-              accept=".csv, .xls, .xlsx"
-              onChange={handleFileChange}
-              className="form-control"
-            />
+          <input
+            type="file"
+            accept=".csv, .xls, .xlsx"
+            onChange={(e) => {
+              handleFileChange(e); // Call handleFileChange with the event
+              localStorage.removeItem("sessionId");
+              localStorage.removeItem("database");
+              localStorage.removeItem("databaseAliasName");
+            }}
+            className="form-control"
+          />
             {uploadStatus && (
               <div className="alert alert-info mt-2" role="alert">
                 {uploadStatus}

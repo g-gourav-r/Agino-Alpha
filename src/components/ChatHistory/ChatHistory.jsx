@@ -55,7 +55,7 @@ function ChatHistory({ onStartNewChat, onSelectChat }) {
                 className="btn-white m-2 ms-3"
                 style={{ width: "90%" }}
                 value={chat._id}
-                onClick={() => onSelectChat(chat._id)}
+                onClick={() => { onSelectChat(chat._id); localStorage.setItem("history", true); localStorage.removeItem("database"); localStorage.removeItem("databaseAliasName")}}
               >
                 <div className="p-1 text-truncate text-start">
                   {chat.input} <br />

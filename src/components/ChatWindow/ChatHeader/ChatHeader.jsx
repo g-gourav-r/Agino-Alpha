@@ -42,7 +42,7 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
     <div>
       <div className="bg-white m-2 border px-2 rounded d-flex align-items-center justify-content-between">
         <p className="my-auto">Session ID: {sessionID}</p>
-        <div className={`dropdown`} style={{ visibility: isChatFromHistory ? 'hidden' : 'visible', display : selectedDatabase ? 'none': 'block' }}>
+        <div className={`dropdown`} style={{ visibility: ( isChatFromHistory || localStorage.getItem("databaseAliasName") ) ? 'hidden' : 'visible', display : selectedDatabase ? 'none': 'block' }}>
         <button
             className="btn-outline dropdown-toggle p-2"
             type="button"
@@ -73,10 +73,10 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
           </ul>
         </div>
 
-        {selectedDatabase && (
+        {(selectedDatabase?.aliasName || localStorage.getItem("databaseAliasName")) && (
           <div className="p-2">
             <i className="bi bi-database-fill me-2"></i>
-            {selectedDatabase.aliasName}
+            {selectedDatabase?.aliasName || localStorage.getItem("databaseAliasName")}
           </div>
         )}
       </div>

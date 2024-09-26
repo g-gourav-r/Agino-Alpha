@@ -11,6 +11,7 @@ function LoginPage() {
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [loginError, setLoginError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -37,16 +38,19 @@ function LoginPage() {
 
         if (isValid) {
             const loginApiCall = createApiCall("login", POST);
+            setLoading(true);
             loginApiCall({
                 body: { username: email, password: password },
             })
               .then(response => {
+                setLoading(false);
                 const token = response.token;
                 localStorage.setItem('token', token);
                 localStorage.setItem('psid', uuidv4());
                 navigate('/home');
               })
               .catch(async error => {
+                setLoading(false);
                 let errorMessage = 'An unknown error occurred';
                 if (error instanceof Response) {
                   try {
@@ -106,7 +110,15 @@ function LoginPage() {
                                     {loginError && <p className="error-text text-danger">{loginError}</p>}
                                 </div>
                                 <div className="btn-group d-flex">
-                                    <button type="submit" className="btn-green p-1 px-lg-4 me-3">Login</button>
+                                    <button type="submit" className="btn-green p-1 px-lg-4 me-3">
+                                        {loading ? (
+                                            <div className="spinner-grow spinner-grow-sm text-success" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                        ) : (
+                                            "Login"
+                                        )}
+                                    </button>
                                     <button className="btn-black p-1 px-lg-4" onClick={() => navigate('/signup')}>Signup</button>
                                 </div>
                             </form>

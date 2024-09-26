@@ -22,33 +22,40 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
   const handleSelectDatabase = (db) => {
     setSelectedDatabase(db);
     localStorage.setItem("database", db.database);
+    localStorage.setItem("databaseAliasName", db.aliasName);
   };
+
+
 
   useEffect(() => {
     if (isNewChat) {
       setMessages([]);
       localStorage.removeItem("sessionId");
       localStorage.removeItem("database");
+      localStorage.removeItem("history");
       resetNewChat();
       setIsChatFromHistory(false);
     }
   }, [isNewChat, resetNewChat]);
 
   useEffect(() => {
+    const sessionIdFromStorage = localStorage.getItem("sessionId");
     setLoading(true); // Start loading
-    const fetchChatHistory = async () => {
-      if (selectedChatId) {
-        setIsChatFromHistory(true);
+    const fetchChatHistory = async (sessionId) => {
+      if (sessionId) {
+        if (localStorage.getItem("history")){
+          setIsChatFromHistory(true);
+        }
         const token = localStorage.getItem("token");
-
+  
         try {
           const response = await getChatHistoryApi({
-            urlParams: { sessionId: selectedChatId },
+            urlParams: { sessionId: sessionId },
             headers: { Authorization: `Bearer ${token}` },
           });
-
+  
           if (response && response.data) {
-            localStorage.setItem("sessionId", selectedChatId);
+            localStorage.setItem("sessionId", sessionId);
             const newMessages = response.data
               .map((chat) => [
                 {
@@ -84,7 +91,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                       {chat.context.followup.length > 0 && (
                         <FollowupButtons
                           followups={chat.context.followup}
-                          disabled ={true}
+                          onFollowupClick={handleFollowupClick}
                         />
                       )}
                     </div>
@@ -102,9 +109,14 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
         }
       }
     };
-
-    fetchChatHistory();
+  
+    if (selectedChatId) {
+      fetchChatHistory(selectedChatId); // Fetch based on selectedChatId
+    } else if (sessionIdFromStorage) {
+      fetchChatHistory(sessionIdFromStorage); // Fetch based on sessionId from localStorage on page load
+    }
   }, [selectedChatId]);
+  
 
   useEffect(() => {
     if (chatContentRef.current) {
@@ -316,14 +328,20 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
         style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}
         ref={chatContentRef}
       >
-        {loading ? ( // Show loader if loading
+        {(loading && localStorage.getItem("sessionId")) ? ( // Show loader if loading
           <div
-            className="d-flex justify-content-center align-items-center mx-auto"
+            className="d-flex flex-column justify-content-center align-items-center mx-auto"
             style={{ height: "100%" }}
           >
             <div className="spinner-grow text-success" role="status">
               <span className="sr-only d-none">Loading...</span>
             </div>
+            <br/>
+            <p className="text-muted ml-3">
+              {selectedChatId
+                ? "Loading previous chat history..."
+                : "Starting a new chat session..."}
+            </p>
           </div>
         ) : (
           messages.map((msg) => (
