@@ -328,7 +328,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
         style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}
         ref={chatContentRef}
       >
-        {(loading && localStorage.getItem("sessionId")) ? ( // Show loader if loading
+        {(loading && localStorage.getItem("history")) ? ( // Show loader if loading
           <div
             className="d-flex flex-column justify-content-center align-items-center mx-auto"
             style={{ height: "100%" }}
