@@ -17,10 +17,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'  # Update to a Node.js version that supports the required syntax
+          node-version: '18'  # or '20' for the latest LTS version
+
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps  # Handle potential dependency conflicts
+        run: npm install --legacy-peer-deps
 
       - name: Build app
         run: npm run build
