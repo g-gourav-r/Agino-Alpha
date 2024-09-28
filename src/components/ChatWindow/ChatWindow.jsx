@@ -138,7 +138,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
   }, [messages]);
 
   const shareEmail = () => {
-    const email = "recipient@example.com"; // Replace with the recipient email address or leave empty for user to fill
     const subject = encodeURIComponent("Chat Summary");
 
     let body = "Chat Summary:\n\n"; // Initialize body for the email content
@@ -338,9 +337,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
             </div>
             <br/>
             <p className="text-muted ml-3">
-              {selectedChatId
-                ? "Loading previous chat history..."
-                : "Starting a new chat session..."}
+              Loading
             </p>
           </div>
         ) : (

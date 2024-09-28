@@ -133,6 +133,46 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
     });
   };
 
+  // New function to copy the table data
+  const handleCopyTable = () => {
+    // Create the HTML table string
+    const tableHTML = `
+      <table>
+        <thead>
+          <tr>
+            ${headers.map((header) => `<th>${header}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${currentRows
+            .map(
+              (row) =>
+                `<tr>${headers
+                  .map((header) => `<td>${row[header]}</td>`)
+                  .join("")}</tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+  
+    // Use the Clipboard API to copy HTML content
+    navigator.clipboard
+      .write([
+        new ClipboardItem({
+          "text/html": new Blob([tableHTML], { type: "text/html" }),
+          "text/plain": new Blob([tableHTML], { type: "text/plain" }),
+        }),
+      ])
+      .then(() => {
+        alert("Table copied");
+      })
+      .catch((error) => {
+        console.error("Error copying table data as HTML:", error);
+      });
+  };
+  
+
   return (
     <>
       <div style={scrollableContainerStyle}>
@@ -206,9 +246,12 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         <button className="btn-black btn-sm p-1 me-2 d-flex align-items-center" onClick={handleShare}>
           <i className="bi bi-share me-2"></i>Share Report
         </button>
+        <button className="btn-black btn-sm p-1 me-2 d-flex align-items-center" onClick={handleCopyTable}>
+          <i className="bi bi-clipboard me-2"></i> Copy Table
+        </button>
         {graphData && (
           <button className="btn-black btn-sm p-1 d-flex align-items-center" onClick={handleCopyGraph}>
-            <i class="bi bi-copy"></i> Copy Graph
+            <i className="bi bi-copy"></i> Copy Graph
           </button>
         )}
       </div>
@@ -218,53 +261,60 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         <div className="modal fade show" style={{ display: "block" }}>
           <div className="modal-dialog">
             <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Generate Graph</h5>
-                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+              <div className="modal-header d-flex justify-content-between">
+                <h5 className="modal-title text-black">Select Data for Graph</h5>
+                <button type="button btn-outline" className="close" onClick={handleCloseModal}>
+                  &times;
+                </button>
               </div>
               <div className="modal-body">
-                {/* Dropdown for first header */}
+                {/* Form to select headers */}
                 <div className="form-group">
-                  <label htmlFor="first-header-select">Select X-axis</label>
-                  <select className="form-control" id="first-header-select" value={selectedFirstHeader} onChange={(e) => setSelectedFirstHeader(e.target.value)}>
+                  <label htmlFor="x-axis">X-axis</label>
+                  <select
+                    id="x-axis"
+                    value={selectedFirstHeader}
+                    onChange={(e) => setSelectedFirstHeader(e.target.value)}
+                    className="form-control"
+                  >
                     <option value="">Select...</option>
-                    {headers.map((header, index) => (
-                      <option key={index} value={header}>{header}</option>
+                    {headers.map((header) => (
+                      <option key={header} value={header}>{header}</option>
                     ))}
                   </select>
                 </div>
-                {/* Dropdown for second header */}
                 <div className="form-group">
-                  <label htmlFor="second-header-select">Select Y-axis</label>
-                  <select className="form-control" id="second-header-select" value={selectedSecondHeader} onChange={(e) => setSelectedSecondHeader(e.target.value)}>
+                  <label htmlFor="y-axis">Y-axis 1</label>
+                  <select
+                    id="y-axis"
+                    value={selectedSecondHeader}
+                    onChange={(e) => setSelectedSecondHeader(e.target.value)}
+                    className="form-control"
+                  >
                     <option value="">Select...</option>
-                    {headers.map((header, index) => (
-                      <option key={index} value={header}>{header}</option>
+                    {headers.map((header) => (
+                      <option key={header} value={header}>{header}</option>
                     ))}
                   </select>
                 </div>
-                {/* Dropdown for second Y-axis */}
                 <div className="form-group">
-                  <label htmlFor="second-y-header-select">Select Second Y-axis</label>
-                  <select className="form-control" id="second-y-header-select" value={selectedSecondYHeader} onChange={(e) => setSelectedSecondYHeader(e.target.value)}>
+                  <label htmlFor="y-axis2">Y-axis 2</label>
+                  <select
+                    id="y-axis2"
+                    value={selectedSecondYHeader}
+                    onChange={(e) => setSelectedSecondYHeader(e.target.value)}
+                    className="form-control"
+                  >
                     <option value="">Select...</option>
-                    {headers.map((header, index) => (
-                      <option key={index} value={header}>{header}</option>
+                    {headers.map((header) => (
+                      <option key={header} value={header}>{header}</option>
                     ))}
-                  </select>
-                </div>
-                {/* Dropdown for graph type */}
-                <div className="form-group">
-                  <label htmlFor="graph-type-select">Select Graph Type</label>
-                  <select className="form-control" id="graph-type-select" value={graphType} onChange={handleGraphTypeChange}>
-                    <option value="line">Line</option>
-                    <option value="bar">Bar</option>
                   </select>
                 </div>
               </div>
               <div className="modal-footer">
+                <button type="button" className="btn btn-primary" onClick={handleGenerateGraphSubmit}>Generate</button>
                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
-                <button type="button" className="btn btn-primary" onClick={handleGenerateGraphSubmit}>Generate Graph</button>
               </div>
             </div>
           </div>

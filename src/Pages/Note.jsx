@@ -9,6 +9,17 @@ function NotePad() {
   const [selectedNote, setSelectedNote] = useState(null);
   const [refreshHistory, setRefreshHistory] = useState(false);
 
+  // Function to handle starting a new chat
+  const onStartNewChat = () => {
+    setSelectedNote(null); // Reset selected note when starting a new chat
+    refreshNoteHistory(); // Optionally refresh note history
+  };
+
+  // Function to handle selecting a chat
+  const onSelectChat = (chatId) => {
+    console.log('Chat selected:', chatId);
+  };
+
   const refreshNoteHistory = () => {
     setRefreshHistory(!refreshHistory); // Trigger history refresh
   };
@@ -19,7 +30,14 @@ function NotePad() {
         <Header currentPage={"notepad"} />
         <WindowTemplate
           Maincontent={<NoteEditor selectedNote={selectedNote} refreshNoteHistory={refreshNoteHistory} />}
-          sideBar={<NoteHistory setSelectedNote={setSelectedNote} refreshHistory={refreshHistory} />}
+          sideBar={
+            <NoteHistory 
+              setSelectedNote={setSelectedNote} 
+              refreshHistory={refreshHistory} 
+              onStartNewChat={onStartNewChat} 
+              onSelectChat={onSelectChat} // Pass the function here
+            />
+          }
         />
       </div>
     </Background>
