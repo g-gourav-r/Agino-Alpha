@@ -1,26 +1,34 @@
 import { useEffect, useState } from "react";
 import createApiCall, { GET } from "../api/api";
 
-function NoteHistory({ onStartNewChat, onSelectChat, setSelectedNote, refreshHistory }) {
+function NoteHistory({ onStartNewChat, onSelectChat, setSelectedNote, refreshNoteHistory }) {
   const [chatHistory, setNoteHistory] = useState([]);
   const token = localStorage.getItem('token');
+  const [loading, setLoading] = useState(false);
   const NoteHistoryApiCall = createApiCall("api/notes", GET);
 
+
   useEffect(() => {
-    NoteHistoryApiCall({
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((data) => {
+    const fetchNoteHistory = async () => {
+      setLoading(true);
+      try {
+        const data = await NoteHistoryApiCall({
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
         if (data && data.status && data.data) {
           setNoteHistory(data.data);
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching chat history:", error);
-      });
-  }, [refreshHistory]); // Trigger refresh when refreshHistory changes
+      } catch (error) {
+        console.error("Error fetching note history:", error);
+      }
+      setLoading(false)
+    };
+
+    fetchNoteHistory(); // Call the function to fetch notes
+  }, [refreshNoteHistory]); // Trigger refresh when refreshNoteHistory changes
 
   const handleStartNewChat = () => {
     localStorage.removeItem('notesID'); // Clear notesID from local storage

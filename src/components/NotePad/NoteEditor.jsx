@@ -199,12 +199,19 @@ const extensions = [
   Dropcursor
 ];
 
-const CombinedEditor = ({ selectedNote, refreshNoteHistory }) => {
+const CombinedEditor = ({ selectedNote,  newChatTriggered, refreshNotes   }) => {
 
   const [noteTitle, setNoteTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState('');
-  const contentEditableRef = useRef(null);
+
+  useEffect(() => {
+    if (newChatTriggered) {
+      setNoteTitle("");
+      const contentEditableDiv = document.querySelector('.tiptap');
+      contentEditableDiv.innerHTML = "";
+    }
+  }, [newChatTriggered]);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -269,6 +276,7 @@ const CombinedEditor = ({ selectedNote, refreshNoteHistory }) => {
         });
   
         console.log("Notes saved successfully:", response);
+        refreshNotes();
   
       } catch (error) {
         console.error("Error saving notes:", error);
@@ -297,7 +305,7 @@ const CombinedEditor = ({ selectedNote, refreshNoteHistory }) => {
         });
   
         console.log("Note updated successfully:", response);
-  
+        refreshNotes();
       } catch (error) {
         console.error("Error updating note:", error);
         alert(error?.message || "An unknown error occurred");
@@ -330,10 +338,10 @@ const CombinedEditor = ({ selectedNote, refreshNoteHistory }) => {
           )}
         </button>
         <button type="button" className="btn-green d-flex p-2 me-2">
-          <i class="bi bi-share me-2"></i> Share
+          <i className="bi bi-share me-2"></i> Share
         </button>
         <button type="button" className="btn-green d-flex p-2">
-          <i class="bi bi-download me-2"></i> Download
+          <i className="bi bi-download me-2"></i> Download
         </button>
       </div>
     <EditorProvider slotBefore={<MenuBar />} extensions={extensions} content={content}>

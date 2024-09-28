@@ -7,12 +7,16 @@ import Background from '../components/Background/BackgroundImage.jsx';
 
 function NotePad() {
   const [selectedNote, setSelectedNote] = useState(null);
-  const [refreshHistory, setRefreshHistory] = useState(false);
+  const [refreshChat, setRefreshNote] = useState(false);
+  const [newChatTriggered, setNewChatTriggered] = useState(false);
 
-  // Function to handle starting a new chat
-  const onStartNewChat = () => {
-    setSelectedNote(null); // Reset selected note when starting a new chat
-    refreshNoteHistory(); // Optionally refresh note history
+  const handleStartNewChat = () => {
+    setNewChatTriggered(true); // Set state to indicate a new chat has started
+  };
+
+  const handleRefreshNotes = () => {
+    console.log("Refreshing notes...");
+    setRefreshNote(true);
   };
 
   // Function to handle selecting a chat
@@ -20,8 +24,8 @@ function NotePad() {
     console.log('Chat selected:', chatId);
   };
 
-  const refreshNoteHistory = () => {
-    setRefreshHistory(!refreshHistory); // Trigger history refresh
+  const refreshNotes = () => {
+    console.log("Refresh notes called");
   };
 
   return (
@@ -29,13 +33,18 @@ function NotePad() {
       <div className="d-flex flex-column vh-100">
         <Header currentPage={"notepad"} />
         <WindowTemplate
-          Maincontent={<NoteEditor selectedNote={selectedNote} refreshNoteHistory={refreshNoteHistory} />}
+          Maincontent={
+            <NoteEditor 
+              selectedNote={selectedNote} 
+              refreshNotes={refreshNotes}
+              newChatTriggered={newChatTriggered}
+            />}
           sideBar={
             <NoteHistory 
               setSelectedNote={setSelectedNote} 
-              refreshHistory={refreshHistory} 
-              onStartNewChat={onStartNewChat} 
+              onStartNewChat={handleStartNewChat}
               onSelectChat={onSelectChat} // Pass the function here
+              refreshNotes={refreshNotes}
             />
           }
         />
