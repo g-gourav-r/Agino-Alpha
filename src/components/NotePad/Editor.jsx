@@ -1,89 +1,76 @@
-import React, { Component } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import ImageResize from 'quill-image-resize-module-react';
+import './styles.scss'
 
-Quill.register('modules/imageResize', ImageResize);
+import Document from '@tiptap/extension-document'
+import Heading from '@tiptap/extension-heading'
+import Image from '@tiptap/extension-image'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
+import { EditorContent, useEditor } from '@tiptap/react'
+import FileHandler from '@tiptap-pro/extension-file-handler'
+import React from 'react'
 
-class Editor extends Component {
-  constructor(props) {
-    super(props);
-    // Initialize state with the editor content passed via props
-    this.state = { editorHtml: props.value || '' };
-    this.handleChange = this.handleChange.bind(this);
-  }
+export default () => {
+  const editor = useEditor({
+    extensions: [
+      Document,
+      Heading,
+      Paragraph,
+      Text,
+      Image,
+      FileHandler.configure({
+        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+        onDrop: (currentEditor, files, pos) => {
+          files.forEach(file => {
+            const fileReader = new FileReader()
 
-  // Update state and notify parent component about changes
-  handleChange(html) {
-    this.setState({ editorHtml: html });
-    if (this.props.onChange) {
-      this.props.onChange(html); // Notify parent component
-    }
-  }
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+              currentEditor.chain().insertContentAt(pos, {
+                type: 'image',
+                attrs: {
+                  src: fileReader.result,
+                },
+              }).focus().run()
+            }
+          })
+        },
+        onPaste: (currentEditor, files, htmlContent) => {
+          files.forEach(file => {
+            if (htmlContent) {
+              // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
+              // you could extract the pasted file from this url string and upload it to a server for example
+              console.log(htmlContent) // eslint-disable-line no-console
+              return false
+            }
 
-  // Update local state when props change
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.value !== prevState.editorHtml) {
-      return { editorHtml: nextProps.value };
-    }
-    return null;
-  }
+            const fileReader = new FileReader()
 
-  render() {
-    return (
-      <ReactQuill
-        theme="snow" // Set theme directly
-        onChange={this.handleChange}
-        value={this.state.editorHtml}
-        modules={Editor.modules}
-        formats={Editor.formats}
-        bounds={'#root'}
-        placeholder={this.props.placeholder}
-      />
-    );
-  }
-}
-
-// Quill modules to attach to editor
-Editor.modules = {
-  toolbar: [
-    [{ header: '1' }, { header: '2' }, { font: [] }],
-    [{ size: [] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [
-      { list: 'ordered' },
-      { list: 'bullet' },
-      { indent: '-1' },
-      { indent: '+1' }
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+              currentEditor.chain().insertContentAt(currentEditor.state.selection.anchor, {
+                type: 'image',
+                attrs: {
+                  src: fileReader.result,
+                },
+              }).focus().run()
+            }
+          })
+        },
+      }),
     ],
-    ['link', 'image', 'video'],
-    ['clean']
-  ],
-  clipboard: {
-    matchVisual: false
-  },
-  imageResize: {
-    parchment: Quill.import('parchment'),
-    modules: ['Resize', 'DisplaySize']
-  }
-};
+    content: `
+      <h1>
+        Try to paste or drop files into this editor
+      </h1>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+    `,
+  })
 
-// Quill editor formats
-Editor.formats = [
-  'header',
-  'font',
-  'size',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'bullet',
-  'indent',
-  'link',
-  'image',
-  'video'
-];
-
-export default Editor;
+  return (
+    <EditorContent editor={editor} />
+  )
+}
