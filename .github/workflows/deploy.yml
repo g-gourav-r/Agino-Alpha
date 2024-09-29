@@ -24,10 +24,9 @@ jobs:
           npm config set "@tiptap-pro:registry" https://registry.tiptap.dev/
           echo "//registry.tiptap.dev/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
 
-      - name: Remove node_modules and package-lock.json
+      - name: Remove node_modules
         run: |
           rm -rf node_modules
-          rm -f package-lock.json
 
       - name: Cache Node modules
         uses: actions/cache@v2
