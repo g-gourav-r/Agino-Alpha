@@ -124,14 +124,32 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
   };
 
   const handleCopyGraph = () => {
-    const graphElement = document.getElementById("graph-container");
-    html2canvas(graphElement).then((canvas) => {
-      canvas.toBlob((blob) => {
-        navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-        alert("Graph copied to clipboard!");
-      });
+    const canvas = document.querySelector('#graph-container canvas');
+    if (!canvas) {
+      alert("Canvas element not found!");
+      return;
+    }
+  
+    // Convert the canvas to a blob and copy it to clipboard
+    canvas.toBlob((blob) => {
+      if (blob) {
+        navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+          .then(() => {
+            alert("Graph copied to clipboard!");
+          })
+          .catch(err => {
+            console.error("Failed to write to clipboard: ", err);
+            alert("Failed to copy the graph to clipboard.");
+          });
+      } else {
+        alert("Failed to create a blob from the canvas.");
+      }
     });
   };
+  
+  
+
+  
 
   // New function to copy the table data
   const handleCopyTable = () => {
