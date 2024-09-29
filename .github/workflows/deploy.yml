@@ -21,8 +21,8 @@ jobs:
 
       - name: Configure npm to use private registry
         run: |
-          npm config set "@tiptap-pro:registry" https://registry.tiptap.dev/
-          echo "//registry.tiptap.dev/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
+          echo "@tiptap-pro:registry=https://registry.tiptap.dev/" >> ~/.npmrc
+          echo "//registry.tiptap.dev/:_authToken=${{ secrets.TIPTAP_PRO_TOKEN }}" >> ~/.npmrc
 
       - name: Remove node_modules
         run: |
