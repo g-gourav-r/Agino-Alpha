@@ -1,0 +1,14 @@
+.table-pdf {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .table-pdf th, .table-pdf td {
+    border: 0.5px solid black; /* Specify border styles */
+    padding: 8px; /* Adjust padding as needed */
+  }
+  
+  .table-pdf th {
+    background-color: #f2f2f2; /* Optional: header background color */
+  }
+  

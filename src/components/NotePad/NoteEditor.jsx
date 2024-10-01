@@ -18,6 +18,7 @@ import ImageResize from "tiptap-extension-resize-image";
 import React, { useState, useRef, useEffect } from "react";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import createApiCall, { POST, PUT, GET } from "../api/api";
+import './pdf-table.css';
 
 // Additional component or function definitions go here
 
@@ -156,29 +157,36 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
   });
 
   const handleDownload = () => {
-    const content = editor.getHTML(); // You can also use getJSON() for structure
-
-    // Create a temporary container to store the editor's content
+    const content = editor.getHTML().replace(/<table/g, '<table class="table-pdf"'); // Add class to table
+  
     const tempContainer = document.createElement('div');
     tempContainer.innerHTML = content;
-    document.body.appendChild(tempContainer); // Append it to the document to render styles
+    document.body.appendChild(tempContainer);
   
-    // Use html2pdf to convert the temporary container to a PDF
     const options = {
       margin: 1,
       filename: notesTitle,
-      html2canvas: { scale: 2 },  // Use a higher scale for better resolution
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: true,
+      },
+      jsPDF: {
+        unit: 'in',
+        format: 'letter',
+        orientation: 'portrait',
+      },
     };
   
     html2pdf()
-      .from(tempContainer) // Convert the container to PDF
+      .from(tempContainer)
       .set(options)
-      .save()  // Trigger the download
+      .save()
       .then(() => {
-        document.body.removeChild(tempContainer); // Clean up after the PDF is generated
+        document.body.removeChild(tempContainer);
       });
   };
+  
 
   const generatePDFAndOpenMailApp = () => {
 
