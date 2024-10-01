@@ -180,6 +180,44 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
       });
   };
 
+  const generatePDFAndOpenMailApp = () => {
+
+    // Get the content from the editor
+    const content = editor.getHTML();
+
+    // Generate PDF
+    const opt = {
+      margin: 1,
+      filename: notesTitle,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
+
+    // Generate the PDF and open the email app
+    html2pdf()
+      .from(content)
+      .set(opt)
+      .toPdf()
+      .get('pdf')
+      .then(function (pdf) {
+        // Convert the PDF to a blob URL
+        const pdfBlob = pdf.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+
+        // Open mail client with mailto link
+        const body = encodeURIComponent(
+          `Please find the PDF attached. You can download it here: ${url}`
+        );
+        const mailtoLink = `mailto:?body=${body}`;
+
+        window.location.href = mailtoLink;
+      })
+      .catch((error) => {
+        console.error('Failed to generate or send PDF:', error);
+      });
+  };
+
   const handleSave = async () => {
     const token = localStorage.getItem("token");
     const notesID = localStorage.getItem("notesID");
@@ -273,7 +311,7 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
                 </>
               )}
             </button>
-            <button type="button" className="btn-green d-flex p-2 me-2">
+            <button type="button" className="btn-green d-flex p-2 me-2" onClick={generatePDFAndOpenMailApp}>
               <i className="bi bi-share me-2"></i> Share
             </button>
             <button type="button" className="btn-green d-flex p-2" onClick={handleDownload}>
