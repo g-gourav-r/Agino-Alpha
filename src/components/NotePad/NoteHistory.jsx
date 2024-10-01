@@ -15,7 +15,6 @@ function NoteHistory({onSelectNote, newNote }) {
           headers: { Authorization: `Bearer ${token}` },
         });
         setNoteHistory(response.data);
-        console.log(noteHistory);
       } catch (error) {
         console.error("Failed to fetch note history:", error);
       } finally {

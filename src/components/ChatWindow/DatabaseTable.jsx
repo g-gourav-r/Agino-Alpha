@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Bubble, Doughnut, Pie, PolarArea, Radar, Scatter } from "react-chartjs-2";
 import createApiCall, { POST, GET } from "../api/api.jsx";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import html2canvas from "html2canvas";
@@ -189,7 +189,27 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         console.error("Error copying table data as HTML:", error);
       });
   };
-  
+
+  const renderChart = (type) => {
+    switch (type) {
+      case 'bar':
+        return <Bar data={graphData} options={chartOptions} />;
+      case 'bubble':
+        return <Bubble data={graphData} options={chartOptions} />;
+      case 'doughnut':
+        return <Doughnut data={graphData} options={chartOptions} />;
+      case 'pie':
+        return <Pie data={graphData} options={chartOptions} />;
+      case 'polarArea':
+        return <PolarArea data={graphData} options={chartOptions} />;
+      case 'radar':
+        return <Radar data={graphData} options={chartOptions} />;
+      case 'scatter':
+        return <Scatter data={graphData} options={chartOptions} />;
+      default:
+        return <Line data={graphData} options={chartOptions} />;
+    }
+  };
 
   return (
     <>
@@ -242,15 +262,15 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         </nav>
       )}
 
+      
+
       {/* Display the graph */}
       <div id="graph-container" className="p-1">
-        {graphData && (
-          graphType === "line" ? (
-            <Line data={graphData} options={chartOptions} />
-          ) : (
-            <Bar data={graphData} options={chartOptions} />
-          )
-        )}
+      {graphData && (
+        <div id="graph-container" className="mt-4">
+          {renderChart(graphType)}
+        </div>
+      )}
       </div>
 
       {/* Generate Graph Button */}
@@ -281,14 +301,14 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
             <div className="modal-content">
               <div className="modal-header d-flex justify-content-between">
                 <h5 className="modal-title text-black">Select Data for Graph</h5>
-                <button type="button btn-outline" className="close" onClick={handleCloseModal}>
+                <button type="button" className="close  btn-outline" onClick={handleCloseModal}>
                   &times;
                 </button>
               </div>
               <div className="modal-body">
                 {/* Form to select headers */}
                 <div className="form-group">
-                  <label htmlFor="x-axis">X-axis</label>
+                  <label htmlFor="x-axis" className="p-2">X-axis</label>
                   <select
                     id="x-axis"
                     value={selectedFirstHeader}
@@ -302,7 +322,7 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="y-axis">Y-axis 1</label>
+                  <label htmlFor="y-axis" className="p-2">Y-axis ( Parameter 1)</label>
                   <select
                     id="y-axis"
                     value={selectedSecondHeader}
@@ -316,7 +336,7 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="y-axis2">Y-axis 2</label>
+                  <label htmlFor="y-axis2" className="p-2">Y-axis (Parameter 2)</label>
                   <select
                     id="y-axis2"
                     value={selectedSecondYHeader}
@@ -329,10 +349,22 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
                     ))}
                   </select>
                 </div>
+                <div className="form-group">
+                  <label htmlFor="y-axis2" className="p-2">Graph Type</label>
+                  <select className="form-control" value={graphType} onChange={handleGraphTypeChange}>
+                      <option value="line">Line</option>
+                      <option value="bar">Bar</option>
+                      {/* <option value="bubble">Bubble</option>
+                      <option value="doughnut">Doughnut</option>
+                      <option value="pie">Pie</option>
+                      <option value="polarArea">Polar Area</option>
+                      <option value="radar">Radar</option>
+                      <option value="scatter">Scatter</option> */}
+                    </select>
+                </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={handleGenerateGraphSubmit}>Generate</button>
-                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
+                <button type="button" className="btn-green p-2" onClick={handleGenerateGraphSubmit}>Generate</button>
               </div>
             </div>
           </div>

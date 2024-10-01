@@ -40,11 +40,9 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("API Response:", response);
 
         if (response.status) {
           const content = JSON.parse(response.data.content); // Parse if needed
-          console.log("Content:", content);
           setOldNoteData(content);
           setNoteTitle(response.data.title);
         } else {
@@ -250,7 +248,6 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
           },
         });
 
-        console.log("Note updated:", response);
       } else {
         // Add new note
         const addNewNoteApi = createApiCall("api/notes", POST);
@@ -262,7 +259,6 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
           },
         });
 
-        console.log("New note added:", response);
       }
     } catch (error) {
       console.error("Error saving note:", error);

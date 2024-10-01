@@ -1,4 +1,17 @@
+import React, { useState } from 'react';
+import FeedbackModal from '../FeedbackModal/FeedbackModal';
+
 function WindowTemplate({ sideBar, Maincontent }) {
+    const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+
+    const handleFeedbackModel = () => {
+        setShowModal(true); // Show the modal
+    };
+
+    const handleClose = () => {
+        setShowModal(false); // Close the modal
+    };
+
     return (
         <div className="page-wrapper container-fluid h-100 d-flex flex-column">
             <div className="window-wrapper border my-2 flex-grow-1 rounded h-100">
@@ -7,7 +20,9 @@ function WindowTemplate({ sideBar, Maincontent }) {
                         <div className="side-bar d-flex flex-column flex-grow-1 h-100 overflow-auto">
                             {sideBar}
                             <div className="mt-auto p-3">
-                                <button type="button" className="btn-green w-100 p-2">Feedback</button>
+                                <button type="button" className="btn-green w-100 p-2" onClick={handleFeedbackModel}>
+                                    Feedback
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -20,6 +35,9 @@ function WindowTemplate({ sideBar, Maincontent }) {
                     </div>
                 </div>
             </div>
+
+            {/* Feedback Modal */}
+            <FeedbackModal showModal={showModal} handleClose={handleClose} />
         </div>
     );
 }
