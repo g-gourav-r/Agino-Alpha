@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import createApiCall, { GET } from "../api/api";
 
-function NoteHistory({onSelectNote }) {
-  const [chatHistory, setNoteHistory] = useState([]);
+function NoteHistory({onSelectNote, newNote }) {
+  const [noteHistory, setNoteHistory] = useState([]);
   const token = localStorage.getItem('token');
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +15,7 @@ function NoteHistory({onSelectNote }) {
           headers: { Authorization: `Bearer ${token}` },
         });
         setNoteHistory(response.data);
-        console.log(chatHistory);
+        console.log(noteHistory);
       } catch (error) {
         console.error("Failed to fetch note history:", error);
       } finally {
@@ -31,7 +31,7 @@ function NoteHistory({onSelectNote }) {
   return (
     <div className="d-flex flex-column h-100">
       <div className="m-2">
-        <button type="button" className="w-100 btn-green p-2" >
+        <button type="button" className="w-100 btn-green p-2" onClick={newNote}>
           Start a New Chat
         </button>
       </div>
@@ -41,10 +41,14 @@ function NoteHistory({onSelectNote }) {
       >
         <div className="w-100">
           {loading ? (
-            <div className="text-center text-black">Loading...</div> // Show loading message or spinner
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
+              <div className="spinner-grow text-success" role="status">
+                <span className="sr-only d-none">Loading...</span>
+              </div>
+            </div>
           ) : (
-            chatHistory.length > 0 ? (
-              chatHistory.map((chat) => (
+            noteHistory.length > 0 ? (
+              noteHistory.map((chat) => (
                 <button
                   key={chat._id}
                   className="btn-white m-2 ms-3"
