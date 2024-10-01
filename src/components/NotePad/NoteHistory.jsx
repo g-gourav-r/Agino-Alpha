@@ -1,51 +1,38 @@
 import { useEffect, useState } from "react";
 import createApiCall, { GET } from "../api/api";
 
-function NoteHistory({ onStartNewChat, onSelectChat, setSelectedNote, refreshNoteHistory }) {
+function NoteHistory({onSelectNote }) {
   const [chatHistory, setNoteHistory] = useState([]);
   const token = localStorage.getItem('token');
-  const [loading, setLoading] = useState(false);
-  const NoteHistoryApiCall = createApiCall("api/notes", GET);
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Fetch note history when the component mounts
     const fetchNoteHistory = async () => {
-      setLoading(true);
       try {
-        const data = await NoteHistoryApiCall({
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const noteHistoryApi = createApiCall("api/notes", GET);
+        const response = await noteHistoryApi({
+          headers: { Authorization: `Bearer ${token}` },
         });
-        
-        if (data && data.status && data.data) {
-          setNoteHistory(data.data);
-        }
+        setNoteHistory(response.data);
+        console.log(chatHistory);
       } catch (error) {
-        console.error("Error fetching note history:", error);
+        console.error("Failed to fetch note history:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
-      setLoading(false)
     };
 
-    fetchNoteHistory(); // Call the function to fetch notes
-  }, [refreshNoteHistory]); // Trigger refresh when refreshNoteHistory changes
+    fetchNoteHistory();
+  }, [token]);
 
-  const handleStartNewChat = () => {
-    localStorage.removeItem('notesID'); // Clear notesID from local storage
-    onStartNewChat(); // Call the parent function to start a new chat
-  };
 
-  const handleSelectChat = (chat) => {
-    setSelectedNote(chat); // Set the selected note
-    localStorage.setItem('notesID', chat._id); // Update notesID in local storage
-    onSelectChat(chat._id); // Call the parent function to select the chat
-  };
 
   return (
     <div className="d-flex flex-column h-100">
       <div className="m-2">
-        <button type="button" className="w-100 btn-green p-2" onClick={handleStartNewChat}>
-          Start a New chat
+        <button type="button" className="w-100 btn-green p-2" >
+          Start a New Chat
         </button>
       </div>
       <div
@@ -53,16 +40,24 @@ function NoteHistory({ onStartNewChat, onSelectChat, setSelectedNote, refreshNot
         style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}
       >
         <div className="w-100">
-          {chatHistory.map((chat) => (
-            <button
-              key={chat._id}
-              className="btn-white m-2 ms-3"
-              style={{ width: "90%" }}
-              onClick={() => handleSelectChat(chat)} // Handle chat selection
-            >
-              <div className="p-1 text-truncate">{chat.title}</div>
-            </button>
-          ))}
+          {loading ? (
+            <div className="text-center text-black">Loading...</div> // Show loading message or spinner
+          ) : (
+            chatHistory.length > 0 ? (
+              chatHistory.map((chat) => (
+                <button
+                  key={chat._id}
+                  className="btn-white m-2 ms-3"
+                  style={{ width: "90%" }}
+                  onClick={() => onSelectNote(chat._id)}
+                >
+                  <div className="p-1 text-truncate">{chat.title}</div>
+                </button>
+              ))
+            ) : (
+              <div className="text-center text-black">No notes available</div> // Show message if no notes are present
+            )
+          )}
         </div>
       </div>
     </div>
