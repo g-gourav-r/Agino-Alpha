@@ -15,6 +15,7 @@ function Chat(){
     // Function to start a new chat
     const handleStartNewChat = () => {
         localStorage.removeItem('sessionId'); // Clear sessionId
+        localStorage.removeItem('databaseAliasName');
         setIsNewChat(true); // Trigger a new chat
     };
     const onSelectChat = (chatId) => {

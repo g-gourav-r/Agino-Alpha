@@ -39,6 +39,9 @@ function LoginPage() {
         if (isValid) {
             const loginApiCall = createApiCall("login", POST);
             setLoading(true);
+            localStorage.removeItem('database');
+            localStorage.removeItem('databaseAliasName');
+            localStorage.removeItem('sessionId');
             loginApiCall({
                 body: { username: email, password: password },
             })
