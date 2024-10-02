@@ -267,7 +267,7 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
       {/* Display the graph */}
       <div id="graph-container" className="p-1">
       {graphData && (
-        <div id="graph-container" className="mt-4">
+        <div id="graph-container" className="mt-4"  style={{ height: '60vh' }}>
           {renderChart(graphType)}
         </div>
       )}
