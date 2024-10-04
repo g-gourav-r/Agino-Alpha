@@ -40,7 +40,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
   useEffect(() => {
     const sessionIdFromStorage = localStorage.getItem("sessionId");
-    setLoading(true); // Start loading
     const fetchChatHistory = async (sessionId) => {
       if (sessionId) {
         if (localStorage.getItem("history")){
@@ -49,6 +48,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
         const token = localStorage.getItem("token");
   
         try {
+          setLoading(true); // Start loading
           const response = await getChatHistoryApi({
             urlParams: { sessionId: sessionId },
             headers: { Authorization: `Bearer ${token}` },

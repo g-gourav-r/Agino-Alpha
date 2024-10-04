@@ -12,6 +12,11 @@ function LoginPage() {
     const [passwordError, setPasswordError] = useState("");
     const [loginError, setLoginError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -102,12 +107,15 @@ function LoginPage() {
                                     <div className="input-group">
                                         <span className="input-group-text"><i className="bi bi-lock"></i></span>
                                         <input 
-                                            type="password" 
+                                             type={showPassword ? "text" : "password"}
                                             className="form-control p-2" 
                                             placeholder="Password" 
                                             name="password"
                                             required 
                                         />
+                                                <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
+          <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i> {/* Toggle icon */}
+        </span>
                                     </div>
                                     {passwordError && <p className="error-text text-danger">{passwordError}</p>}
                                     {loginError && <p className="error-text text-danger">{loginError}</p>}

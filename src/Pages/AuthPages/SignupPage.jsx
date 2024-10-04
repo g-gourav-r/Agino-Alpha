@@ -12,6 +12,16 @@ function SignupPage() {
     const [usernameError, setUsernameError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [signupError, setSignupError] = useState("");
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+    };
+
+    const toggleRepeatPasswordVisibility = () => {
+      setShowRepeatPassword(!showRepeatPassword);
+    };
 
 
     const validatePasswords = (password, repeatPassword) => {
@@ -135,22 +145,28 @@ function SignupPage() {
                                     <div className="input-group">
                                         <span className="input-group-text"><i className="bi bi-lock"></i></span>
                                         <input
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             className="form-control p-2"
                                             placeholder="Password"
                                             name="password"
                                         />
+                                        <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
+                                            <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i> {/* Toggle icon */}
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="mb-3">
                                     <div className="input-group">
                                         <span className="input-group-text"><i className="bi bi-lock"></i></span>
                                         <input
-                                            type="password"
+                                            type={showRepeatPassword ? "text" : "password"}
                                             className="form-control p-2"
                                             placeholder="Repeat Password"
                                             name="repeatPassword"
                                         />
+                                        <span className="input-group-text" onClick={toggleRepeatPasswordVisibility} style={{ cursor: 'pointer' }}>
+                                            <i className={showRepeatPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i> {/* Toggle icon */}
+                                        </span>
                                     </div>
                                     {passwordError && <p className="error-text text-danger">{passwordError}</p>}
                                     {successMessage && <p className="error-text text-success">{successMessage}</p>}
