@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import createApiCall, { GET } from "../api/api.jsx";
+import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
 
 function ConnectedDataSources() {
   const [connectedDataSources, setConnectedDataSources] = useState([]);
@@ -46,9 +47,7 @@ function ConnectedDataSources() {
         {loading ?  
         (
           <div className="d-flex justify-content-center align-items-center mx-auto" style={{ height: "100%" }}>
-            <div className="spinner-grow text-success" role="status">
-              <span className="sr-only d-none">Loading...</span>
-            </div>
+            <MutatingDotsLoader/>
           </div>
         ) :
         (

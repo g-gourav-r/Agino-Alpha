@@ -104,10 +104,10 @@
 
 .btn-menu {
     background-color: $bg-light-gray;
-    font-size: 16px;
+    font-size: 12px;
     color: $text-dark-gray;
     border: 1px solid $border-light-gray;
-    padding: 8px 16px;
+    padding: 2px 16px;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
   
     &:hover {
@@ -128,10 +128,10 @@
 .table-settings{
     .btn-menu {
         background-color: $bg-light-gray;
-        font-size: 12px;
+        font-size: 10px;
         color: $text-dark-gray;
         border: 1px solid $border-light-gray;
-        padding: 8px 16px;
+        padding: 2px 16px;
         transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
       
         &:hover {

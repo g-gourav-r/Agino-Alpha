@@ -5,6 +5,8 @@ import CodeEditor from "./CodeEditor.jsx";
 import DatabaseTable from "./DatabaseTable.jsx";
 import FollowupButtons from "./FollowupButtons.jsx";
 import createApiCall, { POST, GET } from "../api/api.jsx";
+import DNALoader from "../Loaders/DNALoader.jsx";
+import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
 
 function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
   const [selectedDatabase, setSelectedDatabase] = useState(null);
@@ -209,7 +211,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     const placeholderMessage = {
       id: Date.now() + 1,
       sender: "ai",
-      message: "Loading...",
+      message: <DNALoader />,
       loading: true,
     };
     setMessages((prevMessages) => [...prevMessages, placeholderMessage]);
@@ -332,13 +334,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
             className="d-flex flex-column justify-content-center align-items-center mx-auto"
             style={{ height: "100%" }}
           >
-            <div className="spinner-grow text-success" role="status">
-              <span className="sr-only d-none">Loading...</span>
-            </div>
-            <br/>
-            <p className="text-muted ml-3">
-              Loading
-            </p>
+            <MutatingDotsLoader/>
           </div>
         ) : (
           messages.map((msg) => (

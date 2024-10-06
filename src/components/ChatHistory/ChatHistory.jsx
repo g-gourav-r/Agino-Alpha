@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import createApiCall, { GET } from "../api/api.jsx";
+import MutatuingDotsLoader from "../Loaders/MutatingDots.jsx";
 
 function ChatHistory({ onStartNewChat, onSelectChat }) {
   const [chatHistory, setChatHistory] = useState([]);
@@ -44,9 +45,7 @@ function ChatHistory({ onStartNewChat, onSelectChat }) {
         <div className="w-100">
           {loading ? ( // Show loader if loading
             <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
-              <div className="spinner-grow text-success" role="status">
-                <span className="sr-only d-none">Loading...</span>
-              </div>
+              <MutatuingDotsLoader/>
             </div>
           ) : (
             chatHistory.map((chat) => (

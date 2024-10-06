@@ -1,7 +1,7 @@
-import Blockquote from "@tiptap/extension-blockquote";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
+import TextAlign from "@tiptap/extension-text-align";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
@@ -18,7 +18,8 @@ import ImageResize from "tiptap-extension-resize-image";
 import React, { useState, useRef, useEffect } from "react";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import createApiCall, { POST, PUT, GET } from "../api/api";
-import './pdf-table.css';
+import "./pdf-table.css";
+import MutatingDotsLoader from "../Loaders/MutatingDots";
 
 // Additional component or function definitions go here
 
@@ -39,7 +40,6 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
         const response = await fetchNoteContentApi({
           headers: { Authorization: `Bearer ${token}` },
         });
-
 
         if (response.status) {
           const content = JSON.parse(response.data.content); // Parse if needed
@@ -89,6 +89,9 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
       Document,
       Paragraph,
       Text,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
       Gapcursor,
       ImageResize,
       Table.configure({
@@ -155,12 +158,14 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
   });
 
   const handleDownload = () => {
-    const content = editor.getHTML().replace(/<table/g, '<table class="table-pdf"'); // Add class to table
-  
-    const tempContainer = document.createElement('div');
+    const content = editor
+      .getHTML()
+      .replace(/<table/g, '<table class="table-pdf"'); // Add class to table
+
+    const tempContainer = document.createElement("div");
     tempContainer.innerHTML = content;
     document.body.appendChild(tempContainer);
-  
+
     const options = {
       margin: 1,
       filename: notesTitle,
@@ -170,12 +175,12 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
         logging: true,
       },
       jsPDF: {
-        unit: 'in',
-        format: 'letter',
-        orientation: 'portrait',
+        unit: "in",
+        format: "letter",
+        orientation: "portrait",
       },
     };
-  
+
     html2pdf()
       .from(tempContainer)
       .set(options)
@@ -184,10 +189,8 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
         document.body.removeChild(tempContainer);
       });
   };
-  
 
   const generatePDFAndOpenMailApp = () => {
-
     // Get the content from the editor
     const content = editor.getHTML();
 
@@ -195,9 +198,9 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
     const opt = {
       margin: 1,
       filename: notesTitle,
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
     // Generate the PDF and open the email app
@@ -205,10 +208,10 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
       .from(content)
       .set(opt)
       .toPdf()
-      .get('pdf')
+      .get("pdf")
       .then(function (pdf) {
         // Convert the PDF to a blob URL
-        const pdfBlob = pdf.output('blob');
+        const pdfBlob = pdf.output("blob");
         const url = URL.createObjectURL(pdfBlob);
 
         // Open mail client with mailto link
@@ -220,7 +223,7 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
         window.location.href = mailtoLink;
       })
       .catch((error) => {
-        console.error('Failed to generate or send PDF:', error);
+        console.error("Failed to generate or send PDF:", error);
       });
   };
 
@@ -247,7 +250,6 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
             content: JSON.stringify(notesData),
           },
         });
-
       } else {
         // Add new note
         const addNewNoteApi = createApiCall("api/notes", POST);
@@ -258,7 +260,6 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
             content: JSON.stringify(notesData),
           },
         });
-
       }
     } catch (error) {
       console.error("Error saving note:", error);
@@ -283,11 +284,7 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
           className="d-flex flex-column justify-content-center align-items-center mx-auto"
           style={{ height: "100%" }}
         >
-          <div className="spinner-grow text-success" role="status">
-            <span className="sr-only d-none">Loading...</span>
-          </div>
-          <br />
-          <p className="text-muted ml-3">Loading</p>
+          <MutatingDotsLoader />
         </div>
       ) : (
         <>
@@ -315,223 +312,275 @@ const NoteEditor = ({ selectedNoteId, newNote, resetNewChat }) => {
                 </>
               )}
             </button>
-            <button type="button" className="btn-green d-flex p-2 me-2" onClick={generatePDFAndOpenMailApp}>
+            <button
+              type="button"
+              className="btn-green d-flex p-2 me-2"
+              onClick={generatePDFAndOpenMailApp}
+            >
               <i className="bi bi-share me-2"></i> Share
             </button>
-            <button type="button" className="btn-green d-flex p-2" onClick={handleDownload}>
+            <button
+              type="button"
+              className="btn-green d-flex p-2"
+              onClick={handleDownload}
+            >
               <i className="bi bi-download me-2"></i> Download
             </button>
           </div>
-
           {/* Buttons */}
-          <div className="control-group border bg-white m-1 rounded">
-            <div className="button-group d-flex align-items-center justify-content-center mx-auto pt-1">
-              {/* Text Formatting Buttons */}
-              <button
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                disabled={!editor.can().chain().focus().toggleBold().run()}
-                className={`btn-menu ${
-                  editor.isActive("bold") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-type-bold"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                disabled={!editor.can().chain().focus().toggleItalic().run()}
-                className={`btn-menu ${
-                  editor.isActive("italic") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-type-italic"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-                disabled={!editor.can().chain().focus().toggleStrike().run()}
-                className={`btn-menu ${
-                  editor.isActive("strike") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-type-strikethrough"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().toggleCode().run()}
-                disabled={!editor.can().chain().focus().toggleCode().run()}
-                className={`btn-menu ${
-                  editor.isActive("code") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-code-slash"></i>
-              </button>
-
-              {/* Heading and List Buttons */}
-              <button
-                onClick={() => editor.chain().focus().setParagraph().run()}
-                className={`btn-menu ${
-                  editor.isActive("paragraph") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-text-paragraph"></i>
-              </button>
-              {[...Array(6)].map((_, i) => (
+          <div className="control-group border bg-white m-1 rounded px-3">
+            <div className="button-group-wrapper overflow-x-auto py-1" style={{ whiteSpace: 'nowrap' }}>
+              <div className="button-group d-inline-flex align-items-center justify-content-start">
+                {/* Text Formatting Buttons */}
                 <button
-                  key={`heading-${i + 1}`}
-                  onClick={() =>
-                    editor
-                      .chain()
-                      .focus()
-                      .toggleHeading({ level: i + 1 })
-                      .run()
-                  }
+                  onClick={() => editor.chain().focus().toggleBold().run()}
+                  disabled={!editor.can().chain().focus().toggleBold().run()}
                   className={`btn-menu ${
-                    editor.isActive("heading", { level: i + 1 })
+                    editor.isActive("bold") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-type-bold"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleItalic().run()}
+                  disabled={!editor.can().chain().focus().toggleItalic().run()}
+                  className={`btn-menu ${
+                    editor.isActive("italic") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-type-italic"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleStrike().run()}
+                  disabled={!editor.can().chain().focus().toggleStrike().run()}
+                  className={`btn-menu ${
+                    editor.isActive("strike") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-type-strikethrough"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleCode().run()}
+                  disabled={!editor.can().chain().focus().toggleCode().run()}
+                  className={`btn-menu ${
+                    editor.isActive("code") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-code-slash"></i>
+                </button>
+
+                {/* Heading and List Buttons */}
+                <button
+                  onClick={() => editor.chain().focus().setParagraph().run()}
+                  className={`btn-menu ${
+                    editor.isActive("paragraph") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-text-paragraph"></i>
+                </button>
+                {[...Array(6)].map((_, i) => (
+                  <button
+                    key={`heading-${i + 1}`}
+                    onClick={() =>
+                      editor
+                        .chain()
+                        .focus()
+                        .toggleHeading({ level: i + 1 })
+                        .run()
+                    }
+                    className={`btn-menu ${
+                      editor.isActive("heading", { level: i + 1 })
+                        ? "is-active"
+                        : ""
+                    }`}
+                  >
+                    <i className={`bi bi-type-h${i + 1}`}></i>
+                  </button>
+                ))}
+                <button
+                  onClick={() => editor.chain().focus().toggleBulletList().run()}
+                  className={`btn-menu ${
+                    editor.isActive("bulletList") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-list-task"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                  className={`btn-menu ${
+                    editor.isActive("orderedList") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-list-ol"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                  className={`btn-menu ${
+                    editor.isActive("codeBlock") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-code-square"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                  className={`btn-menu ${
+                    editor.isActive("blockquote") ? "is-active" : ""
+                  }`}
+                >
+                  <i className="bi bi-blockquote-left"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().setHorizontalRule().run()}
+                  className="btn-menu"
+                >
+                  <i className="bi bi-hr"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().setHardBreak().run()}
+                  className="btn-menu"
+                >
+                  <i className="bi bi-file-break"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().undo().run()}
+                  disabled={!editor.can().chain().focus().undo().run()}
+                  className="btn-menu"
+                >
+                  <i className="bi bi-arrow-counterclockwise"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().redo().run()}
+                  disabled={!editor.can().chain().focus().redo().run()}
+                  className="btn-menu"
+                >
+                  <i className="bi bi-arrow-clockwise"></i>
+                </button>
+                <button
+                  onClick={() => editor.chain().focus().setColor("#958DF1").run()}
+                  className={`btn-menu ${
+                    editor.isActive("textStyle", { color: "#958DF1" })
                       ? "is-active"
                       : ""
                   }`}
                 >
-                  <i className={`bi bi-type-h${i + 1}`}></i>
+                  <i className="bi bi-highlighter"></i>
                 </button>
-              ))}
-              <button
-                onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={`btn-menu ${
-                  editor.isActive("bulletList") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-list-task"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={`btn-menu ${
-                  editor.isActive("orderedList") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-list-ol"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                className={`btn-menu ${
-                  editor.isActive("codeBlock") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-code-square"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                className={`btn-menu ${
-                  editor.isActive("blockquote") ? "is-active" : ""
-                }`}
-              >
-                <i className="bi bi-blockquote-left"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().setHorizontalRule().run()}
-                className="btn-menu"
-              >
-                <i className="bi bi-hr"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().setHardBreak().run()}
-                className="btn-menu"
-              >
-                <i className="bi bi-file-break"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().undo().run()}
-                disabled={!editor.can().chain().focus().undo().run()}
-                className="btn-menu"
-              >
-                <i className="bi bi-arrow-counterclockwise"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().redo().run()}
-                disabled={!editor.can().chain().focus().redo().run()}
-                className="btn-menu"
-              >
-                <i className="bi bi-arrow-clockwise"></i>
-              </button>
-              <button
-                onClick={() => editor.chain().focus().setColor("#958DF1").run()}
-                className={`btn-menu ${
-                  editor.isActive("textStyle", { color: "#958DF1" })
-                    ? "is-active"
-                    : ""
-                }`}
-              >
-                <i className="bi bi-highlighter"></i>
-              </button>
+                <button
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("left").run()
+                  }
+                  className={`
+                    btn-menu 
+                    ${editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
+                  `}
+                >
+                  <i class="bi bi-text-left"></i>
+                </button>
+                <button
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("center").run()
+                  }
+                  className={`btn-menu
+                    ${editor.isActive({ textAlign: "center" }) ? "is-active" : ""}
+                  `}
+                >
+                  <i class="bi bi-text-center"></i>
+                </button>
+                <button
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("right").run()
+                  }
+                  className={`
+                    btn-menu
+                    ${(editor.isActive({ textAlign: "right" }) ? "is-active" : "")}
+                  `}
+                >
+                  <i class="bi bi-text-right"></i>
+                </button>
+                <button
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("justify").run()
+                  }
+                  className={`
+                    btn-menu
+                    ${editor.isActive({ textAlign: "justify" }) ? "is-active" : ""}
+                  `}
+                >
+                  <i class="bi bi-justify"></i>
+                </button>
+              </div>
             </div>
 
             {/* Table Management Buttons */}
-            <div className="button-group mx-auto table-settings d-flex justify-content-center py-1">
+            <div className="button-group table-settings overflow-x-auto py-1" style={{ whiteSpace: 'nowrap' }}>
               <button
-                className="btn-menu"
-                onClick={() =>
-                  editor
-                    .chain()
-                    .focus()
-                    .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-                    .run()
-                }
-              >
-                <i className="bi bi-table"></i>
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().addColumnBefore().run()}
-              >
-                Add column before
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().addColumnAfter().run()}
-              >
-                Add column after
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().deleteColumn().run()}
-              >
-                Delete column
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().addRowBefore().run()}
-              >
-                Add row before
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().addRowAfter().run()}
-              >
-                Add row after
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().deleteRow().run()}
-              >
-                Delete row
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().deleteTable().run()}
-              >
-                Delete table
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() => editor.chain().focus().mergeOrSplit().run()}
-              >
-                Merge or split
-              </button>
-              <button
-                className="btn-menu"
-                onClick={() =>
-                  editor.chain().focus().setCellAttribute("colspan", 2).run()
-                }
-              >
-                Set cell attribute
-              </button>
+                  className="btn-menu"
+                  onClick={() =>
+                    editor
+                      .chain()
+                      .focus()
+                      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                      .run()
+                  }
+                >
+                  <i className="bi bi-table"></i>
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().addColumnBefore().run()}
+                >
+                  Add column before
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().addColumnAfter().run()}
+                >
+                  Add column after
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().deleteColumn().run()}
+                >
+                  Delete column
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().addRowBefore().run()}
+                >
+                  Add row before
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().addRowAfter().run()}
+                >
+                  Add row after
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().deleteRow().run()}
+                >
+                  Delete row
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().deleteTable().run()}
+                >
+                  Delete table
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() => editor.chain().focus().mergeOrSplit().run()}
+                >
+                  Merge or split
+                </button>
+                <button
+                  className="btn-menu"
+                  onClick={() =>
+                    editor.chain().focus().setCellAttribute("colspan", 2).run()
+                  }
+                >
+                  Set cell attribute
+                </button>
             </div>
           </div>
 

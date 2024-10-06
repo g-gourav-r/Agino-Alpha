@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import createApiCall, { GET } from "../api/api";
+import MutatingDotsLoader from "../Loaders/MutatingDots";
 
 function NoteHistory({onSelectNote, newNote }) {
   const [noteHistory, setNoteHistory] = useState([]);
@@ -41,9 +42,7 @@ function NoteHistory({onSelectNote, newNote }) {
         <div className="w-100">
           {loading ? (
             <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
-              <div className="spinner-grow text-success" role="status">
-                <span className="sr-only d-none">Loading...</span>
-              </div>
+              <MutatingDotsLoader />
             </div>
           ) : (
             noteHistory.length > 0 ? (
