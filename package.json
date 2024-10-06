@@ -60,6 +60,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.1",
+    "react-toastify": "^10.0.5",
     "tiptap-extension-resize-image": "^1.1.8",
     "uuid": "^10.0.0"
   },

@@ -7,6 +7,7 @@ import FollowupButtons from "./FollowupButtons.jsx";
 import createApiCall, { POST, GET } from "../api/api.jsx";
 import DNALoader from "../Loaders/DNALoader.jsx";
 import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
+import {toast } from "react-toastify";
 
 function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
   const [selectedDatabase, setSelectedDatabase] = useState(null);
@@ -194,7 +195,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
     const selectedDatabase = localStorage.getItem("database");
     if (!selectedDatabase) {
-      alert("Please select a database before sending a message.");
+      toast.error("Please select a database before sending a message.", { autoClose: 3000 });
       return;
     }
 
