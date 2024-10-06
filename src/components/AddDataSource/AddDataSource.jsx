@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
 import createApiCall, { GET, POST } from "../api/api.jsx";
+import { toast } from "react-toastify";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -17,7 +18,6 @@ function AddDataSource() {
   const [errors, setErrors] = useState({});
   const [fileModalIsOpen, setFileModalIsOpen] = useState(false);
   const [file, setFile] = useState(null);
-  const [uploadStatus, setUploadStatus] = useState("");
   const [dbModalIsOpen, setDbModalIsOpen] = useState(false);
   const [formSubmitStatus, setFormSubmitStatus] = useState("");
   const [inputsDisabled, setInputsDisabled] = useState(false); // New state for disabling inputs
@@ -135,12 +135,10 @@ function AddDataSource() {
 
   const handleFileUpload = () => {
     setFileModalIsOpen(true);
-    setUploadStatus("");
   };
 
   const closeFileModal = () => {
     setFileModalIsOpen(false);
-    setUploadStatus("");
   };
 
   const handleFileChange = (e) => {
@@ -149,37 +147,55 @@ function AddDataSource() {
 
   const handleSubmitFile = () => {
     if (!file) {
-      setUploadStatus("Please select a file.");
-      return;
+        toast.error("Please select a file.");
+        return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
 
     setLoading(true);
+    closeFileModal();
+    const uploadFileToast = toast.loading("Uploading file..."); // Start loading toast
 
-    const uploadApi = createApiCall("uploadSheet", POST);
+    const uploadApi = createApiCall("uploadSheet", "POST"); // Ensure POST is a string
 
     uploadApi({
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: formData,
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
     })
-      .then((response) => {
-        setLoading(false);
-        if (response.status) {
-          setUploadStatus("File uploaded successfully!");
-        } else {
-          setUploadStatus("File upload failed.");
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setUploadStatus(error.message);
-        console.error("Error uploading file:", error);
-      });
-  };
+        .then((response) => {
+            setLoading(false);
+            if (response.status) {
+                toast.update(uploadFileToast, {
+                    render: "File uploaded successfully!",
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 3000, // Auto close after 3 seconds
+                });
+            } else {
+                toast.update(uploadFileToast, {
+                    render: "File upload failed.",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000, // Auto close after 3 seconds
+                });
+            }
+        })
+        .catch((error) => {
+            setLoading(false);
+            toast.update(uploadFileToast, {
+                render: "Error uploading file: " + (error.message || "An unknown error occurred."),
+                type: "error",
+                isLoading: false,
+                autoClose: 3000, // Auto close after 3 seconds
+            });
+            console.error("Error uploading file:", error);
+        });
+};
+
 
   return (
     <>
@@ -328,11 +344,6 @@ function AddDataSource() {
                   }}
                   className="form-control"
                 />
-                {uploadStatus && (
-                  <div className="alert alert-info mt-2" role="alert">
-                    {uploadStatus}
-                  </div>
-                )}
               </form>
               <div className="text-start">
                 <button
@@ -341,15 +352,7 @@ function AddDataSource() {
                   onClick={handleSubmitFile}
                   disabled={loading} // Optionally disable while loading
                 >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  ) : (
-                    "Upload"
-                  )}
+                  Upload
                 </button>
               </div>
             </Modal>

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import createApiCall from '../api/api';
+import { toast } from 'react-toastify';
 
 function FeedbackModal({ showModal, handleClose}) {
     const [feedback, setFeedback] = useState('');
     const [rating, setRating] = useState(null);
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccessMessage] = useState('');
 
     const handleFeedbackChange = (e) => {
         setFeedback(e.target.value);
@@ -21,15 +20,13 @@ function FeedbackModal({ showModal, handleClose}) {
         const file = e.target.files[0]; 
         if (file) {
             if (file.size > 1024 * 1024) { // 1 MB = 1024 * 1024 bytes
-                setError('File size exceeds 1 MB. Please upload a smaller image.');
+                toast.error('File size exceeds 1 MB. Please upload a smaller image.');
                 setImage(null); // Clear the image if it exceeds the limit
                 return; // Exit the function if the size limit is exceeded
             }    
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImage(reader.result); // Store the Base64 string
-                setError(''); // Clear error if a new image is successfully read
-                setSuccessMessage('');
             };
             reader.readAsDataURL(file); 
         }
@@ -40,12 +37,10 @@ function FeedbackModal({ showModal, handleClose}) {
 
         // Check for mandatory fields
         if (!feedback || !rating) {
-            setError('Please fill out all mandatory fields.');
+            toast.error('Please fill out all mandatory fields.');
             return;
         }
 
-        setError(''); // Clear any previous error message
-        setSuccessMessage('');
         setLoading(true); // Set loading state
 
         // Submit feedback with the image if provided
@@ -54,15 +49,13 @@ function FeedbackModal({ showModal, handleClose}) {
 
     const handleCloseAndClear = () => {
         handleClose();       // Call the handleClose function
-        setError('');
         setFeedback('');
         setImage(null);
-        setSuccessMessage(''); // Clear success message
     };
 
     const submitFeedback = async (feedbackText, ratingValue, imageBase64) => {
         const feedbackApi = createApiCall("api/feedback", "POST"); // Ensure POST is defined as a string
-    
+        const submitToastId = toast.loading("Submit your feedback"); 
         const payload = {
             feedback: feedbackText,
             rating: parseFloat(ratingValue),
@@ -79,15 +72,25 @@ function FeedbackModal({ showModal, handleClose}) {
                 body: payload // Convert payload to JSON
             });
 
-            setSuccessMessage('Feedback submitted successfully!'); 
+            toast.update(submitToastId, {
+                render: "Feedback submitted successfully!",
+                type: "success",
+                isLoading: false,
+                autoClose: 1000,
+              });
         } catch (error) {
             console.error("Error submitting feedback:", error); // Log the error for debugging
-            setError(typeof error === 'string' ? error : 'An error occurred.'); // Set the error message
+            toast.update(submitToastId,{
+                render: `${error === 'string' ? error : 'An error occurred.'}`,
+                type: "error",
+                isLoading: false,
+                autoClose: 1000,
+            })
         } finally {
             setLoading(false); // Reset loading state
         }
 
-        console.log(payload); // Log the payload for debugging
+        handleClose();
     };
 
     return (
@@ -148,9 +151,6 @@ function FeedbackModal({ showModal, handleClose}) {
                                     onChange={handleImageChange} // Add an event handler to manage the image upload
                                 />
                             </div>
-                            {/* Error Message */}
-                            {error && <div className="alert alert-danger fs-7">{error}</div>} {/* Reduced font size */}
-                            {success && <div className="alert alert-success fs-7">{success}</div>} {/* Reduced font size */}
 
                             <button type="submit" className="btn-green btn-sm p-2 mt-2" disabled={loading}>
                                 {loading ? 'Submitting...' : 'Submit'} {/* Show loading text */}
