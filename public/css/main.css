@@ -470,37 +470,47 @@ body {
 
 /* Hide sidebar on mobile initially */
 .sidebar-container {
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease, width 0.3s ease;
 }
 
 .sidebar-hidden {
   transform: translateX(-100%); /* Hide sidebar off-screen */
+  width: 0; /* Hide sidebar */
 }
 
 .sidebar-visible {
   transform: translateX(0); /* Show sidebar */
+  width: 100%; /* Adjust sidebar width */
 }
 
-/* Show sidebar by default on larger screens */
+/* Ensure sidebar appears by default on larger screens */
 @media (min-width: 768px) {
   .sidebar-container {
     transform: translateX(0); /* Always visible */
+    width: 100%; /* Full width in its column */
   }
 }
 /* Button to toggle sidebar on mobile */
 .toggle-sidebar-btn {
   position: fixed;
+  bottom: 1rem;
+  left: 1rem;
   z-index: 100;
-  left: 0;
-  background-color: #09ba6e;
+  background-color: #28a745;
   color: white;
-  border-radius: 0px 5px 5px 0px;
+  padding: 0.5rem 1rem;
   border: none;
+  border-radius: 5px;
 }
 
-/* Styling for the Feedback button */
+/* Main content styling */
+.content-window {
+  transition: width 0.3s ease;
+}
+
+/* Feedback button styling */
 .btn-green {
-  background-color: #09ba6e;
+  background-color: #28a745;
   color: white;
   border: none;
   border-radius: 5px;

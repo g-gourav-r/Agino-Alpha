@@ -18,43 +18,52 @@ body {
     font-size: small !important;
 }
 
-
-// Test
-
 /* Hide sidebar on mobile initially */
+/* Sidebar transition on mobile */
 .sidebar-container {
-    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%); /* Start hidden by default */
+    transition: transform 0.3s ease; /* Smooth transition for transform */
 }
 
-.sidebar-hidden {
-    transform: translateX(-100%); /* Hide sidebar off-screen */
-}
-
+/* Show sidebar */
 .sidebar-visible {
-    transform: translateX(0); /* Show sidebar */
+    transform: translateX(0); /* Slide in the sidebar */
 }
 
-/* Show sidebar by default on larger screens */
+/* Hide sidebar */
+.sidebar-hidden {
+    transform: translateX(-100%); /* Slide out the sidebar */
+}
+
+/* Ensure sidebar is always visible on larger screens */
 @media (min-width: 768px) {
     .sidebar-container {
-        transform: translateX(0); /* Always visible */
+        transform: translateX(0); /* Sidebar always visible */
+        width: 100%; /* Ensure it takes full width in its column */
     }
 }
 
 /* Button to toggle sidebar on mobile */
 .toggle-sidebar-btn {
     position: fixed;
+    bottom: 1rem;
+    left: 1rem;
     z-index: 100;
-    left: 0;
-    background-color: $secondary-color;
+    background-color: #28a745;
     color: white;
-    border-radius: 0px 5px 5px 0px;
+    padding: 0.5rem 1rem;
     border: none;
+    border-radius: 5px;
 }
 
-/* Styling for the Feedback button */
+/* Main content styling */
+.content-window {
+    transition: margin-left 0.3s ease; /* Transition to shift content when sidebar opens/closes */
+}
+
+/* Feedback button styling */
 .btn-green {
-    background-color: $secondary-color;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;

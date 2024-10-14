@@ -4,6 +4,8 @@ import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
 import createApiCall, { GET, POST } from "../api/api.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHubspot, faShopify, faGoogle, faSalesforce, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -232,28 +234,36 @@ function AddDataSource() {
                 className="d-flex align-items-center btn-green-outline p-2 m-2"
                 style={{ width: "200px", height: "50px" }}
               >
-                Shopify
+                <FontAwesomeIcon icon={faShopify} className="me-2"/>Shopify
               </button>
               <button
                 className="d-flex align-items-center btn-green-outline p-2 m-2"
                 style={{ width: "200px", height: "50px" }}
               >
+                <FontAwesomeIcon icon={faHubspot} className="me-2" />
                 HubSpot
               </button>
               <button
                 className="d-flex align-items-center btn-green-outline p-2 m-2"
                 style={{ width: "200px", height: "50px" }}
               >
-                Google Analytics
+                <FontAwesomeIcon icon={faGoogle} className="me-2"/>Google Analytics
               </button>
               <button
                 className="d-flex align-items-center btn-green-outline p-2 m-2"
                 style={{ width: "200px", height: "50px" }}
               >
-                SalesForce
+                  <FontAwesomeIcon icon={faSalesforce} className="me-2"/>SalesForce
+              </button>
+              <button
+                className="d-flex align-items-center btn-green-outline p-2 m-2"
+                style={{ width: "200px", height: "50px" }}
+              >
+                  <FontAwesomeIcon icon={faFacebook} className="me-2"/>Facebook Pixel
               </button>
           </div>
           <h4 className="ms-4 p-4 text-secondary">Upload Flat File</h4>
+          <FontAwesomeIcon icon="fa-solid fa-check-square" />
           <div className="mx-4 px-4 d-flex flex-wrap">
             <button
               className="d-flex align-items-center btn-green-outline p-2 m-2"
