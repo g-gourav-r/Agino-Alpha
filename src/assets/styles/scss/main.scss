@@ -17,3 +17,45 @@
 body {
     font-size: small !important;
 }
+
+
+// Test
+
+/* Hide sidebar on mobile initially */
+.sidebar-container {
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-hidden {
+    transform: translateX(-100%); /* Hide sidebar off-screen */
+}
+
+.sidebar-visible {
+    transform: translateX(0); /* Show sidebar */
+}
+
+/* Show sidebar by default on larger screens */
+@media (min-width: 768px) {
+    .sidebar-container {
+        transform: translateX(0); /* Always visible */
+    }
+}
+
+/* Button to toggle sidebar on mobile */
+.toggle-sidebar-btn {
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    background-color: $secondary-color;
+    color: white;
+    border-radius: 0px 5px 5px 0px;
+    border: none;
+}
+
+/* Styling for the Feedback button */
+.btn-green {
+    background-color: $secondary-color;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}

@@ -20,7 +20,12 @@ function WindowTemplate({ sideBar, Maincontent }) {
                         <div className="side-bar d-flex flex-column flex-grow-1 h-100 overflow-auto">
                             {sideBar}
                             <div className="mt-auto p-3">
-                                <button type="button" className="btn-green w-100 p-2" onClick={handleFeedbackModel}>
+                                <div className="btn-outline d-flex align-items-center justify-content-between mx-3 mb-1 ">
+                                    <i class="btn-outline bi bi-slack fs-6 me-3"></i>
+                                    <i class="btn-outline bi bi-microsoft-teams fs-6 me-3"></i>
+                                    <i class="btn-outline bi bi-discord fs-6 me-3"></i>
+                                </div>
+                                <button type="button" className="btn-green w-100 p-1" onClick={handleFeedbackModel}>
                                     Feedback
                                 </button>
                             </div>

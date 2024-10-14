@@ -12,7 +12,7 @@ function Header({ currentPage }) {
   return (
     <nav className="navbar navbar-expand-lg d-flex justify-content-between mx-2 mt-1 p-0 rounded">
       <div className="container-fluid header">
-        <a className="navbar-brand" href="#">Agino</a>
+        <a className="navbar-brand" href="https://www.agino.tech">Agino</a>
         <button
           className="navbar-toggler"
           type="button"
@@ -72,8 +72,11 @@ function Header({ currentPage }) {
             </li>
           </ul>
           <div className="d-flex">
+            <button className="btn-green me-3 px-1 r-4" type="button" onClick={handleLogout}>
+              Join Community !
+            </button>
             <button className="btn-black p-2 r-4" type="button" onClick={handleLogout}>
-              <i className="bi bi-person me-2"></i>Logout
+              <i class="bi bi-box-arrow-right"></i> Logout
             </button>
           </div>
         </div>

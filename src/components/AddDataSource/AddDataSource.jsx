@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
 import createApiCall, { GET, POST } from "../api/api.jsx";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -147,67 +148,71 @@ function AddDataSource() {
 
   const handleSubmitFile = () => {
     if (!file) {
-        toast.error("Please select a file.");
-        return;
+      toast.error("Please select a file.");
+      return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
 
-    setLoading(true);
-    closeFileModal();
+    // setLoading(true);
+    // closeFileModal();
     const uploadFileToast = toast.loading("Uploading file..."); // Start loading toast
 
-    const uploadApi = createApiCall("uploadSheet", "POST"); // Ensure POST is a string
+    const uploadApi = createApiCall("uploadSheet", POST);
 
     uploadApi({
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: formData,
     })
-        .then((response) => {
-            setLoading(false);
-            if (response.status) {
-                toast.update(uploadFileToast, {
-                    render: "File uploaded successfully!",
-                    type: "success",
-                    isLoading: false,
-                    autoClose: 3000, // Auto close after 3 seconds
-                });
-            } else {
-                toast.update(uploadFileToast, {
-                    render: "File upload failed.",
-                    type: "error",
-                    isLoading: false,
-                    autoClose: 3000, // Auto close after 3 seconds
-                });
-            }
-        })
-        .catch((error) => {
-            setLoading(false);
-            toast.update(uploadFileToast, {
-                render: "Error uploading file: " + (error.message || "An unknown error occurred."),
-                type: "error",
-                isLoading: false,
-                autoClose: 3000, // Auto close after 3 seconds
-            });
-            console.error("Error uploading file:", error);
+      .then((response) => {
+        // setLoading(false);
+        if (response.status) {
+          toast.update(uploadFileToast, {
+            render: "File uploaded successfully!",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000, // Auto close after 3 seconds
+          });
+        } else {
+          toast.update(uploadFileToast, {
+            render: "File upload failed.",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000, // Auto close after 3 seconds
+          });
+        }
+      })
+      .catch((error) => {
+        // setLoading(false);
+        toast.update(uploadFileToast, {
+          render:
+            "Error uploading file: " +
+            (error.message || "An unknown error occurred."),
+          type: "error",
+          isLoading: false,
+          autoClose: 3000, // Auto close after 3 seconds
         });
-};
-
+        console.error("Error uploading file:", error);
+      });
+  };
 
   return (
     <>
       {loading ? (
         <>
-        <div className="d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
-          <MutatingDotsLoader/>
-        </div>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "100%" }}
+          >
+            <MutatingDotsLoader />
+          </div>
         </>
       ) : (
         <div>
-          <h1 className="ms-4 p-4 text-secondary">Add Data Base</h1>
+          <h4 className="ms-4 p-4 text-secondary">Add Data Base</h4>
           <div className="mx-4 px-4 d-flex flex-wrap">
             {data.map((db) => (
               <button
@@ -221,7 +226,34 @@ function AddDataSource() {
               </button>
             ))}
           </div>
-          <h1 className="ms-4 p-4 text-secondary">Upload Flat File</h1>
+          <h4 className="ms-4 p-4 text-secondary">Integrate Data Source</h4>
+          <div className="mx-4 px-4 d-flex flex-wrap">
+              <button
+                className="d-flex align-items-center btn-green-outline p-2 m-2"
+                style={{ width: "200px", height: "50px" }}
+              >
+                Shopify
+              </button>
+              <button
+                className="d-flex align-items-center btn-green-outline p-2 m-2"
+                style={{ width: "200px", height: "50px" }}
+              >
+                HubSpot
+              </button>
+              <button
+                className="d-flex align-items-center btn-green-outline p-2 m-2"
+                style={{ width: "200px", height: "50px" }}
+              >
+                Google Analytics
+              </button>
+              <button
+                className="d-flex align-items-center btn-green-outline p-2 m-2"
+                style={{ width: "200px", height: "50px" }}
+              >
+                SalesForce
+              </button>
+          </div>
+          <h4 className="ms-4 p-4 text-secondary">Upload Flat File</h4>
           <div className="mx-4 px-4 d-flex flex-wrap">
             <button
               className="d-flex align-items-center btn-green-outline p-2 m-2"
