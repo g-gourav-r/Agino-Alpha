@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
 import createApiCall, { GET, POST } from "../api/api.jsx";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHubspot, faShopify, faGoogle, faSalesforce, faFacebook } from '@fortawesome/free-brands-svg-icons';
@@ -149,7 +149,9 @@ function AddDataSource() {
   };
 
   const handleSubmitFile = () => {
+    closeFileModal();
     if (!file) {
+      console.log("No file selected");
       toast.error("Please select a file.");
       return;
     }
@@ -170,6 +172,7 @@ function AddDataSource() {
       body: formData,
     })
       .then((response) => {
+        closeFileModal()
         // setLoading(false);
         if (response.status) {
           toast.update(uploadFileToast, {
@@ -214,6 +217,7 @@ function AddDataSource() {
         </>
       ) : (
         <div>
+        <ToastContainer />
           <h4 className="ms-4 p-4 text-secondary">Add Data Base</h4>
           <div className="mx-4 px-4 d-flex flex-wrap">
             {data.map((db) => (
@@ -385,6 +389,7 @@ function AddDataSource() {
                     localStorage.removeItem("databaseAliasName");
                   }}
                   className="form-control"
+                  required
                 />
               </form>
               <div className="text-start">
