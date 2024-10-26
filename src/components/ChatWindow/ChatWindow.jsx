@@ -195,7 +195,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
     const selectedDatabase = localStorage.getItem("database");
     if (!selectedDatabase) {
-      toast.error("Please select a database before sending a message.", { autoClose: 3000 });
+      toast.error("Select a database before sending a message.", { autoClose: 3000 });
       return;
     }
 

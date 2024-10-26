@@ -51,7 +51,7 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
             aria-expanded="false"
             disabled={isChatFromHistory}
           >
-            <i className="bi bi-database-fill"></i>
+            &nbsp;&nbsp;<i className="bi bi-database-fill"></i> Select a datasource &nbsp;
           </button>
           <ul className={"dropdown-menu"} aria-labelledby="dropdownMenuButton1">
             {errorMessage && (
