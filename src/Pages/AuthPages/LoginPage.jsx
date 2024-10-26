@@ -1,14 +1,66 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Background from "../../components/Background/BackgroundImage";
-import createApiCall, { POST } from "../../components/api/api";
+import createApiCall, { GET, POST } from "../../components/api/api";
 import { v4 as uuidv4 } from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { toast, ToastContainer } from 'react-toastify';
 
 function LoginPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const googleAuth = createApiCall("auth/google", GET);
+
+  const handleAuth = () => {
+    setLoading(true);
+    const fetchToastId = toast.loading("Authenticating...");
+
+    googleAuth()
+      .then(response => {
+        setLoading(false);
+        const token = response.token;
+        localStorage.setItem('token', token);
+        localStorage.setItem('psid', uuidv4());
+
+        // Update the toast on success
+        toast.update(fetchToastId, {
+          render: "Login successful!",
+          type: "success",
+          isLoading: false,
+          autoClose: 200,
+        });
+
+        setTimeout(() => {
+          navigate('/home'); // Navigate after toast is displayed
+        }, 300);
+      })
+      .catch(async error => {
+        setLoading(false);
+        let errorMessage = 'An unknown error occurred';
+
+        if (error instanceof Response) {
+          try {
+            const errorResponse = await error.json();
+            errorMessage = errorResponse.message || errorMessage;
+          } catch (e) {
+            console.error('Failed to parse error response:', e);
+          }
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+
+        // Update the toast on error
+        toast.update(fetchToastId, {
+          render: `Error: ${errorMessage}`,
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      });
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -59,8 +111,8 @@ function LoginPage() {
         });
 
         setTimeout(() => {
-            navigate('/home'); // Navigate after toast is displayed
-          }, 300);
+          navigate('/home'); // Navigate after toast is displayed
+        }, 300);
       })
       .catch(async error => {
         setLoading(false);
@@ -133,8 +185,11 @@ function LoginPage() {
                   <button type="submit" className="btn-green p-1 px-lg-4 me-3" disabled={loading}>
                     Login
                   </button>
-                  <button type="button" className="btn-black p-1 px-lg-4" onClick={() => navigate('/signup')}>
+                  <button type="button" className="btn-black p-1 px-lg-4 me-3" onClick={() => navigate('/signup')}>
                     Signup
+                  </button>
+                  <button type="button" className="btn-black p-1 px-lg-4 d-flex align-items-center justify-items-center" onClick={handleAuth} disabled={loading}>
+                    <FontAwesomeIcon icon={faGoogle}/>&nbsp;&nbsp;Continue with Google
                   </button>
                 </div>
               </form>
