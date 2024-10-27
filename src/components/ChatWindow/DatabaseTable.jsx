@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { Line, Bar, Bubble, Doughnut, Pie, PolarArea, Radar, Scatter } from "react-chartjs-2";
 import createApiCall, { POST, GET } from "../api/api.jsx";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend,RadialLinearScale, ArcElement } from 'chart.js';
 import RotatingSquareLoader from "../Loaders/RotatingSquare.jsx";
-import { Toast } from "react-bootstrap";
 import { toast } from "react-toastify";
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, ArcElement,  LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, RadialLinearScale);
 
 const getGraphData = createApiCall("graphData", POST);
 const downloadReportApi = createApiCall("getSheet", GET);
@@ -365,12 +364,12 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
                   <select className="form-control" value={graphType} onChange={handleGraphTypeChange}>
                       <option value="line">Line</option>
                       <option value="bar">Bar</option>
-                      {/* <option value="bubble">Bubble</option>
+                      <option value="bubble">Bubble</option>
                       <option value="doughnut">Doughnut</option>
                       <option value="pie">Pie</option>
                       <option value="polarArea">Polar Area</option>
                       <option value="radar">Radar</option>
-                      <option value="scatter">Scatter</option> */}
+                      <option value="scatter">Scatter</option>
                     </select>
                 </div>
               </div>
