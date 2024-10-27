@@ -7,7 +7,9 @@ import FollowupButtons from "./FollowupButtons.jsx";
 import createApiCall, { POST, GET } from "../api/api.jsx";
 import DNALoader from "../Loaders/DNALoader.jsx";
 import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
-import {toast } from "react-toastify";
+import {toast, ToastContainer } from "react-toastify";
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 
 function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
   const [selectedDatabase, setSelectedDatabase] = useState(null);
@@ -27,8 +29,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     localStorage.setItem("database", db.database);
     localStorage.setItem("databaseAliasName", db.aliasName);
   };
-
-
 
   useEffect(() => {
     if (isNewChat) {
@@ -71,32 +71,57 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                   sender: "ai",
                   message: (
                     <div className="message-content">
-                      <div>{chat.context.agent}</div>
-                      {chat.context.SQL_query && (
-                        <div className="code-editor-container my-1">
-                          <CodeEditor SQL_query={chat.context.SQL_query} />
-                        </div>
-                      )}
-                      {chat.context.query_description && (
-                        <div className="query-description my-1">
-                          <p>{chat.context.query_description}</p>
-                        </div>
-                      )}
-                      {chat.context.DB_response && (
-                        <div className="database-table-container">
-                          <DatabaseTable
-                            DB_response={chat.context.DB_response}
-                            ChatLogId={chat._id}
-                            handleShare={shareEmail}
-                          />
-                        </div>
-                      )}
-                      {chat.context.followup.length > 0 && (
-                        <FollowupButtons
-                          followups={chat.context.followup}
-                          onFollowupClick={handleFollowupClick}
-                        />
-                      )}
+                      <Tabs
+                          defaultActiveKey="Agent Response"
+                          id="uncontrolled-tab-example"
+                          className="mb-3"
+                        >
+                        {/* Agent Response Tab */}
+                        {chat.context.agent && (
+                          <Tab eventKey="Agent Response" title="Agent Response">
+                            <div>{chat.context.agent}</div>
+                          </Tab>
+                        )}
+
+                        {/* SQL Query Tab */}
+                        {(chat.context.SQL_query || chat.context.query_description) && (
+                          <Tab eventKey="SQL Query" title="SQL Query">
+                            {chat.context.SQL_query && (
+                              <div className="code-editor-container my-1">
+                                <CodeEditor SQL_query={chat.context.SQL_query} />
+                              </div>
+                            )}
+                            {chat.context.query_description && (
+                              <div className="query-description my-1">
+                                <p>{chat.context.query_description}</p>
+                              </div>
+                            )}
+                          </Tab>
+                        )}
+
+                        {/* Database Output Tab */}
+                        {chat.context.DB_response && (
+                          <Tab eventKey="Database Output" title="Database Output">
+                            <div className="database-table-container">
+                              <DatabaseTable
+                                DB_response={chat.context.DB_response}
+                                ChatLogId={chat._id}
+                                handleShare={shareEmail}
+                              />
+                            </div>
+                          </Tab>
+                        )}
+
+                        {/* Suggested Follow-Ups Tab */}
+                        {chat.context.followup && chat.context.followup.length > 0 && (
+                          <Tab eventKey="Suggested Follow-Ups" title="Suggested Follow-Ups">
+                            <FollowupButtons
+                              followups={chat.context.followup}
+                              onFollowupClick={handleFollowupClick}
+                            />
+                          </Tab>
+                        )}
+                      </Tabs>
                     </div>
                   ),
                 },
@@ -255,30 +280,54 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                 ...msg,
                 message: (
                   <div className="message-content">
-                    {agent && <div className="py-1">{agent}</div>}
-                    {SQL_query && (
-                      <div className="code-editor-container my-1">
-                        <CodeEditor SQL_query={SQL_query} />
-                      </div>
-                    )}
-                    {query_description && (
-                      <div className="query-description my-1">
-                        <p>{query_description}</p>
-                      </div>
-                    )}
-                    <div className="database-table-container">
-                      <DatabaseTable
-                        DB_response={DB_response}
-                        ChatLogId={chatLogId}
-                        handleShare={shareEmail}
-                      />
-                    </div>
-                    {followup.length > 0 && (
-                      <FollowupButtons
-                        followups={followup}
-                        onFollowupClick={handleFollowupClick}
-                      />
-                    )}
+                    <Tabs defaultActiveKey="Agent Response" id="uncontrolled-tab-example" className="mb-3">
+                      
+                      {/* Agent Response Tab */}
+                      {agent && (
+                        <Tab eventKey="Agent Response" title="Agent Response">
+                          <div className="py-1">{agent}</div>
+                        </Tab>
+                      )}
+
+                      {/* SQL Query Tab */}
+                      {(SQL_query || query_description) && (
+                        <Tab eventKey="SQL Query" title="SQL Query">
+                          {SQL_query && (
+                            <div className="code-editor-container my-1">
+                              <CodeEditor SQL_query={SQL_query} />
+                            </div>
+                          )}
+                          {query_description && (
+                            <div className="query-description my-1">
+                              <p>{query_description}</p>
+                            </div>
+                          )}
+                        </Tab>
+                      )}
+
+                      {/* Database Output Tab */}
+                      {DB_response && (
+                        <Tab eventKey="Database Output" title="Database Output">
+                          <div className="database-table-container">
+                            <DatabaseTable
+                              DB_response={DB_response}
+                              ChatLogId={chatLogId}
+                              handleShare={shareEmail}
+                            />
+                          </div>
+                        </Tab>
+                      )}
+
+                      {/* Suggested Follow-Ups Tab */}
+                      {followup && followup.length > 0 && (
+                        <Tab eventKey="Suggested Follow-Ups" title="Suggested Follow-Ups">
+                          <FollowupButtons
+                            followups={followup}
+                            onFollowupClick={handleFollowupClick}
+                          />
+                        </Tab>
+                      )}
+                    </Tabs>
                   </div>
                 ),
                 loading: false,
@@ -319,6 +368,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
   return (
     <div className="d-flex flex-column h-100">
+      <ToastContainer />
       <div className="flex-shrink-0">
         <ChatHeader
           onSelectDatabase={handleSelectDatabase}
