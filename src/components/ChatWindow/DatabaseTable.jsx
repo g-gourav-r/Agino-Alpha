@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { Line, Bar, Bubble, Doughnut, Pie, PolarArea, Radar, Scatter } from "react-chartjs-2";
 import createApiCall, { POST, GET } from "../api/api.jsx";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import html2canvas from "html2canvas";
+import RotatingSquareLoader from "../Loaders/RotatingSquare.jsx";
+import { Toast } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
@@ -17,6 +19,7 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
   const [selectedSecondHeader, setSelectedSecondHeader] = useState("");
   const [selectedSecondYHeader, setSelectedSecondYHeader] = useState(""); // New state for Y2 header
   const [graphData, setGraphData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [graphType, setGraphType] = useState("line");
   const rowsPerPage = 5;
 
@@ -71,6 +74,7 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
 
   const handleGenerateGraphSubmit = () => {
     const token = localStorage.getItem("token");
+    setLoading(true);
     
     const requestData = {
       xaxis: selectedFirstHeader,
@@ -93,15 +97,17 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
           if (hasValidData) {
             setGraphData(data);
           } else {
-            alert("Cannot generate graph: No valid data returned.");
+            toast.error("Cannot generate graph: No valid data returned.",{autoClose: 750});
           }
         } else {
-          alert("Error: Invalid data format returned from the API.");
+          toast.error("Error: Invalid data format returned from the API.",{autoClose: 750});
         }
       })
       .catch((error) => {
         console.error("Error generating graph:", error);
-      });
+      }).finally(() => {
+        setLoading(false);
+      });;
 
     handleCloseModal();
   };
@@ -135,14 +141,14 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
       if (blob) {
         navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
           .then(() => {
-            alert("Graph copied to clipboard!");
+            toast.info("Graph copied to clipboard!",{autoClose: 750});
           })
           .catch(err => {
             console.error("Failed to write to clipboard: ", err);
-            alert("Failed to copy the graph to clipboard.");
+            toast.error("Failed to copy the graph to clipboard.",{autoClose: 750});
           });
       } else {
-        alert("Failed to create a blob from the canvas.");
+        toast.error("Failed to create a blob from the canvas.",{autoClose: 750});
       }
     });
   };
@@ -183,10 +189,10 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
         }),
       ])
       .then(() => {
-        alert("Table copied");
+        toast.info("Table copied",{autoClose: 750});
       })
       .catch((error) => {
-        console.error("Error copying table data as HTML:", error);
+        toast.error("Error copying Table data:", error);
       });
   };
 
@@ -265,12 +271,18 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
       
 
       {/* Display the graph */}
-      <div id="graph-container" className="p-1">
-      {graphData && (
-        <div id="graph-container" className="mt-4"  style={{ height: '60vh' }}>
-          {renderChart(graphType)}
-        </div>
-      )}
+      <div id="graph-container" className="p-1 d-flex align-items-center justify-content-center">
+        {loading ? (
+          <div className="d-flex align-items-center justify-content-center">
+            <RotatingSquareLoader />
+          </div>
+          ) : (
+            graphData && (
+              <div className="mt-4 w-100">
+                {renderChart(graphType)}
+              </div>
+            )
+          )}
       </div>
 
       {/* Generate Graph Button */}
@@ -293,7 +305,6 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
           </button>
         )}
       </div>
-
       {/* Modal for Graph Generation */}
       {showModal && (
         <div className="modal fade show" style={{ display: "block" }}>
