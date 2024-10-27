@@ -80,6 +80,12 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                         {chat.context.agent && (
                           <Tab eventKey="Agent Response" title="Agent Response">
                             <div>{chat.context.agent}</div>
+                            {chat.context.followup && chat.context.followup.length > 0 && (
+                            <FollowupButtons
+                              followups={chat.context.followup}
+                              onFollowupClick={handleFollowupClick}
+                                />
+                            )}
                           </Tab>
                         )}
 
@@ -113,14 +119,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                         )}
 
                         {/* Suggested Follow-Ups Tab */}
-                        {chat.context.followup && chat.context.followup.length > 0 && (
-                          <Tab eventKey="Suggested Follow-Ups" title="Suggested Follow-Ups">
-                            <FollowupButtons
-                              followups={chat.context.followup}
-                              onFollowupClick={handleFollowupClick}
-                            />
-                          </Tab>
-                        )}
                       </Tabs>
                     </div>
                   ),
@@ -286,6 +284,12 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                       {agent && (
                         <Tab eventKey="Agent Response" title="Agent Response">
                           <div className="py-1">{agent}</div>
+                          {followup && followup.length > 0 && (
+                          <FollowupButtons
+                            followups={followup}
+                            onFollowupClick={handleFollowupClick}
+                          />
+                      )}
                         </Tab>
                       )}
 
@@ -318,15 +322,6 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                         </Tab>
                       )}
 
-                      {/* Suggested Follow-Ups Tab */}
-                      {followup && followup.length > 0 && (
-                        <Tab eventKey="Suggested Follow-Ups" title="Suggested Follow-Ups">
-                          <FollowupButtons
-                            followups={followup}
-                            onFollowupClick={handleFollowupClick}
-                          />
-                        </Tab>
-                      )}
                     </Tabs>
                   </div>
                 ),
