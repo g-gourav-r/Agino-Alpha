@@ -107,7 +107,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
                         {/* Database Output Tab */}
                         {chat.context.DB_response && (
-                          <Tab eventKey="Database Output" title="Database Output">
+                          <Tab eventKey="Data Insights" title="Data Insights">
                             <div className="database-table-container">
                               <DatabaseTable
                                 DB_response={chat.context.DB_response}
@@ -311,7 +311,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
 
                       {/* Database Output Tab */}
                       {DB_response && (
-                        <Tab eventKey="Database Output" title="Database Output">
+                        <Tab eventKey="Data Insights" title="Data Insights">
                           <div className="database-table-container">
                             <DatabaseTable
                               DB_response={DB_response}

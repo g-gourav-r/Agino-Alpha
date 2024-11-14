@@ -18,11 +18,11 @@ function AppRouter() {
             <Route path="/signup" element={<SignupPage />} />
 
             {/* Protected Routes */}
-            <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-            <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-            <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-            <Route path="/dbsource" element={<ProtectedRoute><DataSource /></ProtectedRoute>} />     
-            <Route path="/notepad" element={<ProtectedRoute><NotePad /></ProtectedRoute>} />            
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/dbsource" element={<DataSource />} />     
+            <Route path="/notepad" element={<NotePad />} />            
         </Routes>
       </Router>
     );
