@@ -16,50 +16,10 @@ function LoginPage() {
 
   const handleAuth = () => {
     setLoading(true);
-    const fetchToastId = toast.loading("Authenticating...");
-
-    googleAuth()
-      .then(response => {
-        setLoading(false);
-        const token = response.token;
-        localStorage.setItem('token', token);
-        localStorage.setItem('psid', uuidv4());
-
-        // Update the toast on success
-        toast.update(fetchToastId, {
-          render: "Login successful!",
-          type: "success",
-          isLoading: false,
-          autoClose: 200,
-        });
-
-        setTimeout(() => {
-          navigate('/home'); // Navigate after toast is displayed
-        }, 300);
-      })
-      .catch(async error => {
-        setLoading(false);
-        let errorMessage = 'An unknown error occurred';
-
-        if (error instanceof Response) {
-          try {
-            const errorResponse = await error.json();
-            errorMessage = errorResponse.message || errorMessage;
-          } catch (e) {
-            console.error('Failed to parse error response:', e);
-          }
-        } else {
-          errorMessage = error.message || errorMessage;
-        }
-
-        // Update the toast on error
-        toast.update(fetchToastId, {
-          render: `Error: ${errorMessage}`,
-          type: "error",
-          isLoading: false,
-          autoClose: 3000,
-        });
-      });
+    toast.loading("Authenticating...");
+  
+    // Redirect directly to your backend Google auth endpoint
+    window.location.href = "https://primus-1ppt.onrender.com/auth/google";
   };
 
   const togglePasswordVisibility = () => {
