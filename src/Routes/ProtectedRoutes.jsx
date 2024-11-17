@@ -1,7 +1,16 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const location = useLocation();
+
+  let token = localStorage.getItem('token');
+  const queryParams = new URLSearchParams(location.search);
+  const urlToken = queryParams.get('token');
+
+  if (urlToken) {
+    token = urlToken;
+    localStorage.setItem('token', urlToken);
+  }
 
   if (!token) {
     // If no token is found, redirect to the login page

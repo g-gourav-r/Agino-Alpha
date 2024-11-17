@@ -16,9 +16,7 @@ function LoginPage() {
 
   const handleAuth = () => {
     setLoading(true);
-    toast.loading("Authenticating...");
-  
-    // Redirect directly to your backend Google auth endpoint
+    toast.loading("Authenticating...");  
     window.location.href = "https://primus-1ppt.onrender.com/auth/google";
   };
 
