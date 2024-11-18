@@ -41,7 +41,7 @@ function ChatHeader({ onSelectDatabase, isChatFromHistory }) {
   return (
     <div>
       <div className="bg-white m-2 border px-2 rounded d-flex align-items-center justify-content-between">
-        <p className="my-auto">Session ID: {sessionID}</p>
+        <p className="my-auto d-none d-md-block">Session ID: {sessionID}</p>
         <div className={`dropdown`} style={{ visibility: ( isChatFromHistory || localStorage.getItem("databaseAliasName") ) ? 'hidden' : 'visible', display : selectedDatabase ? 'none': 'block' }}>
         <button
             className="btn-outline dropdown-toggle p-2"
