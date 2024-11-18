@@ -75,13 +75,18 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
     const token = localStorage.getItem("token");
     setLoading(true);
     
+    // Conditionally build request data
     const requestData = {
       xaxis: selectedFirstHeader,
       yaxis1: selectedSecondHeader,
-      yaxis2: selectedSecondYHeader, // Include the second Y-axis
       chatLogId: ChatLogId,
     };
-
+  
+    // Include yaxis2 only if selected
+    if (selectedSecondYHeader) {
+      requestData.yaxis2 = selectedSecondYHeader;
+    }
+  
     getGraphData({
       body: requestData,
       headers: {
@@ -96,20 +101,21 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
           if (hasValidData) {
             setGraphData(data);
           } else {
-            toast.error("Cannot generate graph: No valid data returned.",{autoClose: 750});
+            toast.error("Cannot generate graph: No valid data returned.", { autoClose: 750 });
           }
         } else {
-          toast.error("Error: Invalid data format returned from the API.",{autoClose: 750});
+          toast.error("Error: Invalid data format returned from the API.", { autoClose: 750 });
         }
       })
       .catch((error) => {
         console.error("Error generating graph:", error);
       }).finally(() => {
         setLoading(false);
-      });;
-
+      });
+  
     handleCloseModal();
   };
+  
 
   const chartOptions = {
     responsive: true,
@@ -196,25 +202,61 @@ const DatabaseTable = ({ DB_response, ChatLogId, handleShare }) => {
   };
 
   const renderChart = (type) => {
+    const chartOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top",
+          labels: {
+            filter: (legendItem) => {
+              // Exclude the second Y-axis dataset from the legend if it is not selected
+              if (selectedSecondYHeader && legendItem.text.includes(selectedSecondYHeader)) {
+                return true;
+              }
+              return !legendItem.text.includes(selectedSecondYHeader);  // Exclude if it's tied to the second Y-axis
+            },
+          },
+        },
+        title: {
+          display: true,
+          text: "Generated Graph",
+        },
+      },
+    };
+  
+    // Remove the second Y-axis dataset if it's not selected
+    const filteredGraphData = {
+      ...graphData,
+      datasets: graphData.datasets.filter((dataset) => {
+        if (selectedSecondYHeader) {
+          return true; // Keep all datasets if second Y-axis is selected
+        }
+        // Exclude datasets that are associated with yaxis2
+        return !dataset.yaxis2;
+      }),
+    };
+  
     switch (type) {
       case 'bar':
-        return <Bar data={graphData} options={chartOptions} />;
+        return <Bar data={filteredGraphData} options={chartOptions} />;
       case 'bubble':
-        return <Bubble data={graphData} options={chartOptions} />;
+        return <Bubble data={filteredGraphData} options={chartOptions} />;
       case 'doughnut':
-        return <Doughnut data={graphData} options={chartOptions} />;
+        return <Doughnut data={filteredGraphData} options={chartOptions} />;
       case 'pie':
-        return <Pie data={graphData} options={chartOptions} />;
+        return <Pie data={filteredGraphData} options={chartOptions} />;
       case 'polarArea':
-        return <PolarArea data={graphData} options={chartOptions} />;
+        return <PolarArea data={filteredGraphData} options={chartOptions} />;
       case 'radar':
-        return <Radar data={graphData} options={chartOptions} />;
+        return <Radar data={filteredGraphData} options={chartOptions} />;
       case 'scatter':
-        return <Scatter data={graphData} options={chartOptions} />;
+        return <Scatter data={filteredGraphData} options={chartOptions} />;
       default:
-        return <Line data={graphData} options={chartOptions} />;
+        return <Line data={filteredGraphData} options={chartOptions} />;
     }
   };
+  
+  
 
   return (
     <>

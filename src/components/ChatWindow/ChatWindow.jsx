@@ -8,6 +8,8 @@ import createApiCall, { POST, GET } from "../api/api.jsx";
 import DNALoader from "../Loaders/DNALoader.jsx";
 import MutatingDotsLoader from "../Loaders/MutatingDots.jsx";
 import {toast, ToastContainer } from "react-toastify";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
@@ -20,6 +22,7 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
   const [isChatFromHistory, setIsChatFromHistory] = useState(false);
   const chatContentRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("Agent Response");
 
   const newMessageApi = createApiCall("newMessage", POST);
   const getChatHistoryApi = createApiCall("chatlogBySessionId", GET);
@@ -29,6 +32,24 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
     localStorage.setItem("database", db.database);
     localStorage.setItem("databaseAliasName", db.aliasName);
   };
+
+  const handleCopyResponse = (response) => {
+    if (!response) {
+      toast.info("No response available to copy!",{autoClose: 500});
+      return;
+    }
+  
+    navigator.clipboard
+      .writeText(response)
+      .then(() => {
+        toast.info("Response copied to clipboard!",{autoClose: 500});
+      })
+      .catch((err) => {
+        console.error("Failed to copy response: ", err);
+        toast.info("Failed to copy. Please try again.",{autoClose: 500});
+      });
+  };
+  
 
   useEffect(() => {
     if (isNewChat) {
@@ -71,24 +92,29 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                   sender: "ai",
                   message: (
                     <div className="message-content">
+                    {/* Scrollable Tabs */}
+                    <div className="overflow-auto">
                       <Tabs
-                          defaultActiveKey="Agent Response"
-                          id="uncontrolled-tab-example"
-                          className="mb-3"
-                        >
+                        defaultActiveKey="Agent Response"
+                        id="uncontrolled-tab-example"
+                        className="d-flex flex-nowrap"
+                      >
                         {/* Agent Response Tab */}
                         {chat.context.agent && (
                           <Tab eventKey="Agent Response" title="Agent Response">
                             <div>{chat.context.agent}</div>
+                            <div className="buttons text-end">
+                              <button className="btn-outline m-1 p-1" onClick={() => handleCopyResponse(chat.context.agent)}><FontAwesomeIcon icon={faCopy} /></button>
+                            </div>
                             {chat.context.followup && chat.context.followup.length > 0 && (
-                            <FollowupButtons
-                              followups={chat.context.followup}
-                              onFollowupClick={handleFollowupClick}
-                                />
+                              <FollowupButtons
+                                followups={chat.context.followup}
+                                onFollowupClick={handleFollowupClick}
+                              />
                             )}
                           </Tab>
                         )}
-
+                  
                         {/* SQL Query Tab */}
                         {(chat.context.SQL_query || chat.context.query_description) && (
                           <Tab eventKey="SQL Query" title="SQL Query">
@@ -104,10 +130,10 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                             )}
                           </Tab>
                         )}
-
-                        {/* Database Output Tab */}
+                  
+                        {/* Visualize Data Tab */}
                         {chat.context.DB_response && (
-                          <Tab eventKey="Database Output" title="Database Output">
+                          <Tab eventKey="Visualize Data" title="Visualize Data">
                             <div className="database-table-container">
                               <DatabaseTable
                                 DB_response={chat.context.DB_response}
@@ -117,10 +143,10 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                             </div>
                           </Tab>
                         )}
-
-                        {/* Suggested Follow-Ups Tab */}
                       </Tabs>
                     </div>
+                  </div>
+                  
                   ),
                 },
               ])
@@ -278,51 +304,53 @@ function ChatWindow({ isNewChat, resetNewChat, selectedChatId }) {
                 ...msg,
                 message: (
                   <div className="message-content">
-                    <Tabs defaultActiveKey="Agent Response" id="uncontrolled-tab-example" className="mb-3">
-                      
-                      {/* Agent Response Tab */}
-                      {agent && (
-                        <Tab eventKey="Agent Response" title="Agent Response">
-                          <div className="py-1">{agent}</div>
-                          {followup && followup.length > 0 && (
-                          <FollowupButtons
-                            followups={followup}
-                            onFollowupClick={handleFollowupClick}
-                          />
-                      )}
-                        </Tab>
-                      )}
+                    <div className="overflow-auto">
+                      <Tabs
+                        defaultActiveKey="Agent Response"
+                        id="uncontrolled-tab-example"
+                        className="mb-3 d-flex"
+                        style={{ flexWrap: 'nowrap' }}
+                      >
+                        {/* Agent Response Tab */}
+                        {agent && (
+                          <Tab eventKey="Agent Response" title="Agent Response">
+                            <div className="py-1">{agent}</div>
+                            {followup && followup.length > 0 && (
+                              <FollowupButtons followups={followup} onFollowupClick={handleFollowupClick} />
+                            )}
+                          </Tab>
+                        )}
 
-                      {/* SQL Query Tab */}
-                      {(SQL_query || query_description) && (
-                        <Tab eventKey="SQL Query" title="SQL Query">
-                          {SQL_query && (
-                            <div className="code-editor-container my-1">
-                              <CodeEditor SQL_query={SQL_query} />
+                        {/* SQL Query Tab */}
+                        {(SQL_query || query_description) && (
+                          <Tab eventKey="SQL Query" title="SQL Query">
+                            {SQL_query && (
+                              <div className="code-editor-container my-1">
+                                <CodeEditor SQL_query={SQL_query} />
+                              </div>
+                            )}
+                            {query_description && (
+                              <div className="query-description my-1">
+                                <p>{query_description}</p>
+                              </div>
+                            )}
+                          </Tab>
+                        )}
+
+                        {/* Visualize Data Tab */}
+                        {DB_response && (
+                          <Tab eventKey="Visualize Data" title="Visualize Data">
+                            <div className="database-table-container">
+                              <DatabaseTable
+                                DB_response={DB_response}
+                                ChatLogId={chatLogId}
+                                handleShare={shareEmail}
+                              />
                             </div>
-                          )}
-                          {query_description && (
-                            <div className="query-description my-1">
-                              <p>{query_description}</p>
-                            </div>
-                          )}
-                        </Tab>
-                      )}
-
-                      {/* Database Output Tab */}
-                      {DB_response && (
-                        <Tab eventKey="Database Output" title="Database Output">
-                          <div className="database-table-container">
-                            <DatabaseTable
-                              DB_response={DB_response}
-                              ChatLogId={chatLogId}
-                              handleShare={shareEmail}
-                            />
-                          </div>
-                        </Tab>
-                      )}
-
-                    </Tabs>
+                          </Tab>
+                        )}
+                      </Tabs>
+                    </div>
                   </div>
                 ),
                 loading: false,
