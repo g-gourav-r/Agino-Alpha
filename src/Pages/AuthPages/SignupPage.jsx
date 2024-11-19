@@ -110,7 +110,7 @@ function SignupPage() {
                     <div className="row w-100 flex-grow-1">
                         <div className="col-12 d-none vh-100 d-md-block col-md-7 d-flex align-items-center justify-content-center">
                             <div className="brand-logo text-center">
-                                <h1 className="vh-100 d-flex align-items-center justify-content-center">Agino</h1>
+                                <h1 className="vh-100 d-flex align-items-center justify-content-center">Agino &alpha;</h1>
                             </div>
                         </div>
                         <div className="col-12 col-md-5 d-flex align-items-center justify-content-center">
