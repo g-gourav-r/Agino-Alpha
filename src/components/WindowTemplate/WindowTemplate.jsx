@@ -19,6 +19,7 @@ function WindowTemplate({ sideBar, Maincontent }) {
 
   return (
     <div className="page-wrapper container-fluid h-100 d-flex flex-column">
+      <marquee>Welcome to the Alpha version! You're part of the journey as our team works to enhance your experience.</marquee>
       <div className="window-wrapper border my-2 flex-grow-1 rounded h-100">
         <div className="row g-0 h-100">
           {/* Sidebar */}
